@@ -14,12 +14,12 @@ insert into public.bid_staff(email) values ('aaron@latinobuilt.org') on conflict
 -- insert into public.bid_staff(email) values ('name@latinobuilt.org') on conflict do nothing;
 
 create or replace function public.is_bid_staff() returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public as $fn$
   select exists (
     select 1 from public.bid_staff
     where lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))
   );
-$$;
+$fn$;
 
 -- ---------- Jobs (public part: no client name or street address) ----------
 create table if not exists public.bid_jobs (
@@ -76,8 +76,8 @@ create table if not exists public.bid_submissions (
 create index if not exists bid_submissions_job_idx on public.bid_submissions(job_id);
 
 -- ---------- Keep updated_at current ----------
-create or replace function public.bid_touch() returns trigger language plpgsql as $$
-begin new.updated_at = now(); return new; end; $$;
+create or replace function public.bid_touch() returns trigger language plpgsql as $fn$
+begin new.updated_at = now(); return new; end; $fn$;
 drop trigger if exists bid_jobs_touch on public.bid_jobs;
 create trigger bid_jobs_touch before update on public.bid_jobs for each row execute function public.bid_touch();
 drop trigger if exists bid_submissions_touch on public.bid_submissions;
@@ -117,7 +117,7 @@ grant select, insert, update, delete on public.bid_jobs, public.bid_job_private,
 
 -- ---------- Contractor: submit or update a bid ----------
 create or replace function public.submit_bid(p jsonb) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public as $fn$
 declare
   j public.bid_jobs;
   b public.bid_submissions;
@@ -142,14 +142,14 @@ begin
   if jsonb_typeof(p->'items') = 'array' then
     if jsonb_array_length(p->'items') > 150 then raise exception 'Too many line items.'; end if;
     for v_item in select * from jsonb_array_elements(p->'items') loop
-      if coalesce((v_item->>'price'),'') ~ '^[0-9]+(\.[0-9]{1,2})?$' then
+      if coalesce((v_item->>'price'),'') similar to '[0-9]+(.[0-9]{1,2})?' then
         v_items := v_items || jsonb_build_object('name', left(v_item->>'name', 200), 'price', (v_item->>'price')::numeric);
         v_total := v_total + (v_item->>'price')::numeric;
       end if;
     end loop;
   end if;
   if jsonb_array_length(v_items) = 0 then
-    if coalesce(p->>'total','') !~ '^[0-9]+(\.[0-9]{1,2})?$' then raise exception 'Please enter a price.'; end if;
+    if coalesce(p->>'total','') not similar to '[0-9]+(.[0-9]{1,2})?' then raise exception 'Please enter a price.'; end if;
     v_total := (p->>'total')::numeric;
   end if;
   if v_total <= 0 or v_total > 10000000 then raise exception 'Please check the total price.'; end if;
@@ -187,11 +187,11 @@ begin
   end if;
 
   return jsonb_build_object('token', b.token, 'total', b.total);
-end; $$;
+end; $fn$;
 
 -- ---------- Contractor: check a bid with the receipt link ----------
 create or replace function public.get_bid(t uuid) returns jsonb
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public as $fn$
   select jsonb_build_object(
     'job_id', j.id, 'code', j.code, 'title', j.title, 'city', j.city, 'scope', j.scope,
     'due_at', j.due_at, 'job_status', j.status,
@@ -202,20 +202,20 @@ language sql stable security definer set search_path = public as $$
     'has_file', b.file_path is not null)
   from public.bid_submissions b join public.bid_jobs j on j.id = b.job_id
   where b.token = t;
-$$;
+$fn$;
 
 -- ---------- Contractor: withdraw a bid ----------
 create or replace function public.withdraw_bid(t uuid) returns boolean
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public as $fn$
 begin
   update public.bid_submissions set status = 'withdrawn'
   where token = t and status in ('submitted','reviewing');
   return found;
-end; $$;
+end; $fn$;
 
 -- ---------- Staff: award a bid (everyone else on that job gets "not selected") ----------
 create or replace function public.award_bid(bid uuid) returns boolean
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public as $fn$
 declare v_job uuid;
 begin
   if not public.is_bid_staff() then raise exception 'Staff only.'; end if;
@@ -226,7 +226,7 @@ begin
   update public.bid_submissions set status = 'awarded' where id = bid;
   update public.bid_jobs set status = 'awarded' where id = v_job;
   return true;
-end; $$;
+end; $fn$;
 
 revoke all on function public.submit_bid(jsonb) from public;
 revoke all on function public.get_bid(uuid) from public;
