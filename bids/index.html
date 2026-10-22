@@ -152,7 +152,7 @@ async function vList(){
   const app=$("#app"), my=RID;
   const {data,error}=await api.jobs(); if(my!==RID) return;
   if(error){app.innerHTML=`<div class="msg err">${t("err")}</div>`;return}
-  JOBS=data||[];
+  JOBS=(data||[]).filter(j=>new Date(j.due_at)>new Date());
   const mine=myBids();
   app.innerHTML=`<h1>${t("h1")}</h1><p class="lede">${t("lede")}</p>
   ${JOBS.length?`<div class="jobs">${JOBS.map(j=>{const d=daysLeft(j.due_at);return `<a class="card job" href="#job=${j.id}"><div class="t"><b>${esc(j.title)}</b><div class="meta"><span>${esc(j.city||"")}${j.zip?" "+esc(j.zip):""}</span>${j.home_type?`<span>${esc(j.home_type)}</span>`:""}<span>${t("items")((j.scope||[]).length)}</span><span>${t("due")} ${fmtDate(j.due_at)}</span></div></div><span class="due${d>3?" ok":""}">${t("left")(d)}</span><span class="arrow">›</span></a>`}).join("")}</div>`
@@ -161,7 +161,7 @@ async function vList(){
 }
 
 function bidForm(j,prev){
-  const p=prev||{};const pm={};(p.items||[]).forEach(i=>pm[i.name]=i.price);
+  const p=prev||store.get("lbb-me",{});const pm={};(p.items||[]).forEach(i=>pm[i.name]=i.price);
   const scope=j.scope||[];
   return `<div class="grid"><div>
    <div class="card"><h2>${t("scope")}</h2><p class="note" style="margin:-4px 0 8px">${t("lineHelp")}</p>
@@ -217,13 +217,14 @@ function wireForm(j,token){
       const {data,error}=await api.submit(p);
       if(error) throw error;
       rememberBid({token:data.token,title:j.title,total:data.total,at:Date.now()});
+      store.set("lbb-me",{company:p.company,contact_name:p.contact_name,phone:p.phone,email:p.email,ccb:p.ccb});
       location.hash="bid="+data.token+"&new=1";
     }catch(e){m.innerHTML=`<div class="msg err">${esc((e&&e.message)||t("err"))}</div>`;btn.disabled=false;btn.textContent=token?t("update"):t("send")}
   };
 }
 async function vJob(id){
   const my=RID;
-  if(!JOBS.length){const {data}=await api.jobs(); if(my!==RID) return; JOBS=data||[]}
+  if(!JOBS.length){const {data}=await api.jobs(); if(my!==RID) return; JOBS=(data||[]).filter(j=>new Date(j.due_at)>new Date())}
   const j=JOBS.find(x=>x.id===id||x.code===id);
   if(!j){$("#app").innerHTML=`<button class="crumb" onclick="location.hash=''">${t("back")}</button><div class="card empty">${t("closed")}</div>`;return}
   $("#app").innerHTML=`<button class="crumb" onclick="location.hash=''">${t("back")}</button><h1>${esc(j.title)}</h1><p class="lede">${esc(j.city||"")} · ${t("due")} ${fmtDate(j.due_at)}</p>`+bidForm(j);
