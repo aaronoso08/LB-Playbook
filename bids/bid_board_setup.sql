@@ -108,6 +108,13 @@ create policy "staff manage bids" on public.bid_submissions for all to authentic
   using (public.is_bid_staff()) with check (public.is_bid_staff());
 -- Contractors never read or write bid_submissions directly. They use the functions below.
 
+-- ---------- Table access (works with "Automatically expose new tables" on or off) ----------
+grant usage on schema public to anon, authenticated;
+revoke all on public.bid_staff, public.bid_jobs, public.bid_job_private, public.bid_submissions from anon;
+grant select on public.bid_jobs to anon;
+grant select on public.bid_staff to authenticated;
+grant select, insert, update, delete on public.bid_jobs, public.bid_job_private, public.bid_submissions to authenticated;
+
 -- ---------- Contractor: submit or update a bid ----------
 create or replace function public.submit_bid(p jsonb) returns jsonb
 language plpgsql security definer set search_path = public as $$
