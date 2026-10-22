@@ -1,0 +1,17 @@
+# Keeps the free Supabase project awake. Free projects pause after 7 days with no activity,
+# so this asks the bid board for one open job every morning. It reads only public info.
+name: Keep bid board awake
+on:
+  schedule:
+    - cron: "17 15 * * *"   # every day around 8am Pacific
+  workflow_dispatch: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          KEY=$(curl -fsS https://raw.githubusercontent.com/${{ github.repository }}/main/bids/config.js | grep -o 'eyJ[A-Za-z0-9._-]*')
+          curl -fsS "https://uptrzajrneoarbchmbkp.supabase.co/rest/v1/bid_jobs?select=id&limit=1" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY"
+          echo " Bid board is awake."
