@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Latino Built Bids</title>
+<meta name="description" content="Open jobs for Latino Built contractors. Trabajos abiertos para contratistas de Latino Built.">
+<link rel="icon" href="../icon-192.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#053675;--orange:#F78D1B;--ink:#0F1B2D;--muted:#5B6678;--line:#E3E8F0;--bg:#F5F7FB;--surface:#fff;--soft:#EEF3FA;--ok:#137A43;--okbg:#E5F5EC;--bad:#B42318;--badbg:#FDECEA;--warnbg:#FFF4E5;--warn:#9A5B00;--accent:#053675;--accent-ink:#053675}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#E8EEF7;--muted:#9AA7BA;--line:#25324A;--bg:#0B1220;--surface:#111A2B;--soft:#16223A;--okbg:#0F2E1E;--ok:#5FD08F;--badbg:#3A1513;--bad:#FF8A80;--warnbg:#3A2A10;--warn:#FFC266;--accent:#2F6FD1;--accent-ink:#9CC0FF}}
+:root[data-theme="dark"]{--ink:#E8EEF7;--muted:#9AA7BA;--line:#25324A;--bg:#0B1220;--surface:#111A2B;--soft:#16223A;--okbg:#0F2E1E;--ok:#5FD08F;--badbg:#3A1513;--bad:#FF8A80;--warnbg:#3A2A10;--warn:#FFC266;--accent:#2F6FD1;--accent-ink:#9CC0FF}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-ink)}
+header{background:var(--navy);color:#fff}
+.hwrap{max-width:980px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.hwrap img{width:40px;height:40px}
+.brand b{font-size:18px;letter-spacing:-.01em}.brand b span{color:var(--orange)}.brand small{display:block;font-size:12.5px;opacity:.8}
+.lang{margin-left:auto;display:flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+.lang button{border:0;background:none;color:#fff;font:600 13px Inter,sans-serif;padding:6px 12px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:#fff;color:var(--navy)}
+main{max-width:980px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:clamp(26px,5vw,36px);letter-spacing:-.02em;margin:0 0 6px;line-height:1.15}
+h2{font-size:20px;margin:0 0 10px;letter-spacing:-.01em}
+.lede{color:var(--muted);margin:0 0 20px;max-width:640px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:14px}
+.jobs{display:grid;gap:12px}
+.job{display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;transition:border-color .15s}
+.job:hover{border-color:var(--accent-ink)}
+.job .t{flex:1;min-width:0}.job b{font-size:17px;display:block}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:13.5px;margin-top:4px}
+.due{font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--warnbg);color:var(--warn);white-space:nowrap}
+.due.ok{background:var(--okbg);color:var(--ok)}
+.arrow{color:var(--muted);font-size:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--navy);background:var(--navy);color:#fff;font:700 15px Inter,sans-serif;padding:12px 20px;border-radius:12px;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--accent-ink);border-color:var(--line)}
+.btn.or{background:var(--orange);border-color:var(--orange);color:#1b1200}
+.btn.sm{font-size:13.5px;padding:8px 14px;border-radius:10px}
+.btn:disabled{opacity:.55;cursor:wait}
+.crumb{background:none;border:0;color:var(--accent-ink);font:600 14px Inter,sans-serif;cursor:pointer;padding:0;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.items{width:100%;border-collapse:collapse}
+.items th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:8px 6px;border-bottom:1px solid var(--line)}
+.items td{padding:10px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.items td.q{color:var(--muted);white-space:nowrap;font-size:14px}
+.items .nm{font-weight:600}.items .nt{display:block;color:var(--muted);font-size:13px;font-weight:400}
+.pin{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:var(--soft);padding:0 10px;width:130px}
+.pin span{color:var(--muted)}.pin input{border:0;background:none;width:100%;padding:10px 4px;font:600 15px Inter,sans-serif;color:var(--ink);outline:none}
+.pin:focus-within{outline:2px solid var(--orange)}
+@media(max-width:560px){.items thead{display:none}.items tr{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:10px 0;border-bottom:1px solid var(--line)}.items td{border:0;padding:0}.items td.q{grid-column:1}.items td.p{grid-column:2;grid-row:1/3;align-self:center}}
+.total{display:flex;justify-content:space-between;align-items:baseline;padding:14px 6px 0;font-weight:800;font-size:20px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f{display:flex;flex-direction:column;gap:5px}.f.w{grid-column:1/-1}
+@media(max-width:560px){.form{grid-template-columns:1fr}}
+.f label{font-size:13px;font-weight:700}.f small{color:var(--muted);font-size:12.5px}
+.f input,.f textarea,.f select{width:100%;border:1px solid var(--line);background:var(--soft);border-radius:10px;padding:11px 12px;font:15px Inter,sans-serif;color:var(--ink)}
+.f input:focus,.f textarea:focus{outline:2px solid var(--orange);border-color:transparent}
+.chk{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;font-size:14px;margin-top:4px}
+.chk input{width:18px;height:18px;margin-top:2px;accent-color:var(--orange);flex:none}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.note{color:var(--muted);font-size:13.5px}
+.msg{padding:12px 14px;border-radius:12px;font-size:14.5px;margin:10px 0}
+.msg.err{background:var(--badbg);color:var(--bad)}.msg.ok{background:var(--okbg);color:var(--ok)}.msg.info{background:var(--soft);color:var(--ink)}
+.status{display:inline-block;font-weight:700;font-size:13px;padding:5px 12px;border-radius:999px;background:var(--soft)}
+.status.awarded{background:var(--okbg);color:var(--ok)}.status.not_selected,.status.withdrawn{background:var(--badbg);color:var(--bad)}
+.receipt{word-break:break-all;background:var(--soft);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;margin:8px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.empty{text-align:center;color:var(--muted);padding:34px 16px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14.5px}dt{color:var(--muted)}dd{margin:0;font-weight:600}
+footer{max-width:980px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:13px}
+.sticky{position:sticky;top:12px}
+</style>
+</head>
+<body>
+<header><div class="hwrap"><img src="../icon-192.png" alt=""><div class="brand"><b>Latino<span>Built</span></b><small data-t="sub"></small></div>
+<div class="lang" role="group" aria-label="Language"><button data-l="es">Español</button><button data-l="en">English</button></div></div></header>
+<main id="app"><p class="note">…</p></main>
+<footer><span data-t="foot"></span> · <a href="https://www.latinobuilt.org" target="_blank" rel="noopener">latinobuilt.org</a></footer>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const T={
+ es:{sub:"Trabajos para contratistas",foot:"Latino Built · Asociación de contratistas latinos de Oregon y el suroeste de Washington",
+  h1:"Trabajos abiertos",lede:"Proyectos de reparación de vivienda que buscan ofertas de contratistas. Revise el alcance, ponga su precio por partida y envíe su oferta.",
+  none:"No hay trabajos abiertos ahora. Vuelva pronto.",due:"Cierra",left:d=>d<=0?"Cierra hoy":d===1?"Cierra mañana":`Quedan ${d} días`,items:n=>`${n} partida${n===1?"":"s"}`,
+  view:"Ver y ofertar",back:"‹ Todos los trabajos",scope:"Alcance del trabajo",item:"Partida",qty:"Cantidad",price:"Su precio",total:"Total",
+  details:"Detalles",walk:"Visita al sitio",yourinfo:"Su información",company:"Nombre de la compañía",contact:"Su nombre",phone:"Teléfono",email:"Correo electrónico",
+  ccb:"Número de CCB",start:"Puede empezar",dur:"Días para terminar",warranty:"Garantía",warrantyPh:"Ejemplo: 1 año mano de obra",notes:"Notas para Latino Built",notesPh:"Exclusiones, preguntas o algo que debamos saber",
+  file:"Adjuntar su cotización (opcional)",fileHelp:"PDF o foto, máximo 10 MB",agree:"Mis precios incluyen mano de obra, materiales y permisos necesarios.",
+  send:"Enviar oferta",update:"Guardar cambios",sending:"Enviando…",req:"Llene compañía, teléfono, CCB y al menos un precio.",agreeReq:"Confirme que sus precios incluyen mano de obra, materiales y permisos.",
+  big:"El archivo es mayor de 10 MB.",thanks:"¡Oferta enviada!",thanksP:"Guarde este enlace. Con él puede ver el estado de su oferta o cambiarla antes de la fecha límite.",
+  copy:"Copiar enlace",copied:"Copiado",yours:"Sus ofertas en este teléfono",open:"Ver",status:"Estado",
+  st:{submitted:"Recibida",reviewing:"En revisión",awarded:"¡Ganó el trabajo!",not_selected:"No seleccionada",withdrawn:"Retirada"},
+  stP:{submitted:"Recibimos su oferta. Le avisaremos cuando decidamos.",reviewing:"Estamos revisando las ofertas.",awarded:"Felicidades. Latino Built lo contactará con la dirección y los siguientes pasos.",not_selected:"Gracias por ofertar. Esta vez elegimos otra oferta.",withdrawn:"Usted retiró esta oferta."},
+  edit:"Cambiar mi oferta",withdraw:"Retirar oferta",withdrawQ:"¿Seguro que quiere retirar esta oferta? Toque otra vez para confirmar.",notfound:"No encontramos esa oferta. Revise el enlace.",
+  closed:"Este trabajo ya no recibe ofertas.",soon:"El sistema de ofertas estará listo pronto.",soonP:"Mientras tanto, llame a Latino Built al (503) 889-0511.",err:"Algo salió mal. Intente otra vez.",
+  addr:"La dirección exacta se comparte con el contratista seleccionado.",submittedOn:"Enviada",bidTotal:"Su total",city:"Ciudad",home:"Tipo de casa",prog:"Programa",lineHelp:"Ponga el precio total de cada partida (no por unidad)."},
+ en:{sub:"Jobs for contractors",foot:"Latino Built · Latino contractor association of Oregon and SW Washington",
+  h1:"Open jobs",lede:"Home repair projects looking for contractor bids. Review the scope, price each line item and send your bid.",
+  none:"No open jobs right now. Check back soon.",due:"Closes",left:d=>d<=0?"Closes today":d===1?"Closes tomorrow":`${d} days left`,items:n=>`${n} item${n===1?"":"s"}`,
+  view:"View and bid",back:"‹ All jobs",scope:"Scope of work",item:"Item",qty:"Qty",price:"Your price",total:"Total",
+  details:"Details",walk:"Site visit",yourinfo:"Your information",company:"Company name",contact:"Your name",phone:"Phone",email:"Email",
+  ccb:"CCB number",start:"Can start",dur:"Days to finish",warranty:"Warranty",warrantyPh:"Example: 1 year labor",notes:"Notes for Latino Built",notesPh:"Exclusions, questions or anything we should know",
+  file:"Attach your quote (optional)",fileHelp:"PDF or photo, 10 MB max",agree:"My prices include labor, materials and any permits needed.",
+  send:"Send bid",update:"Save changes",sending:"Sending…",req:"Fill in company, phone, CCB and at least one price.",agreeReq:"Confirm your prices include labor, materials and permits.",
+  big:"The file is larger than 10 MB.",thanks:"Bid sent!",thanksP:"Save this link. Use it to check your bid's status or change it before the deadline.",
+  copy:"Copy link",copied:"Copied",yours:"Your bids on this phone",open:"View",status:"Status",
+  st:{submitted:"Received",reviewing:"Under review",awarded:"You won the job!",not_selected:"Not selected",withdrawn:"Withdrawn"},
+  stP:{submitted:"We got your bid. We'll let you know when we decide.",reviewing:"We're reviewing bids.",awarded:"Congratulations. Latino Built will contact you with the address and next steps.",not_selected:"Thanks for bidding. We chose another bid this time.",withdrawn:"You withdrew this bid."},
+  edit:"Change my bid",withdraw:"Withdraw bid",withdrawQ:"Are you sure you want to withdraw? Tap again to confirm.",notfound:"We couldn't find that bid. Check the link.",
+  closed:"This job is no longer taking bids.",soon:"The bid board is coming soon.",soonP:"In the meantime, call Latino Built at (503) 889-0511.",err:"Something went wrong. Please try again.",
+  addr:"The exact address is shared with the selected contractor.",submittedOn:"Sent",bidTotal:"Your total",city:"City",home:"Home type",prog:"Program",lineHelp:"Enter the total price for each item (not per unit)."}
+};
+let L=(()=>{let v=null;try{v=localStorage.getItem("lbb-lang")}catch(e){}return v||((navigator.language||"es").toLowerCase().startsWith("en")?"en":"es")})();
+if(L!=="en"&&L!=="es") L="es";
+const t=k=>T[L][k];
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=n=>"$"+(Math.round((+n||0)*100)/100).toLocaleString("en-US",{maximumFractionDigits:2});
+const store={get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const fmtDate=d=>new Date(d).toLocaleString(L==="es"?"es-US":"en-US",{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit",timeZone:"America/Los_Angeles"});
+const daysLeft=d=>Math.floor((new Date(d)-new Date())/864e5);
+
+/* ---------- data ---------- */
+const CFG=window.LB_BIDS||{};
+let sb=null;
+if(window.__BIDMOCK) sb=window.__BIDMOCK;
+else if(CFG.url&&CFG.anonKey&&window.supabase) sb=window.supabase.createClient(CFG.url,CFG.anonKey,{auth:{persistSession:false}});
+const api={
+  jobs:()=>sb.from("bid_jobs").select("id,code,title,city,zip,home_type,program,scope,details,walkthrough,due_at,status").eq("status","open").order("due_at",{ascending:true}),
+  submit:p=>sb.rpc("submit_bid",{p}),
+  get:tok=>sb.rpc("get_bid",{t:tok}),
+  withdraw:tok=>sb.rpc("withdraw_bid",{t:tok}),
+  upload:(path,file)=>sb.storage.from("bid-files").upload(path,file,{upsert:false,contentType:file.type||"application/octet-stream"})
+};
+let JOBS=[], RID=0;
+const myBids=()=>store.get("lbb-mine",[]);
+function rememberBid(b){const l=myBids().filter(x=>x.token!==b.token);l.unshift(b);store.set("lbb-mine",l.slice(0,30))}
+
+/* ---------- views ---------- */
+function setLang(l){L=l;try{localStorage.setItem("lbb-lang",l)}catch(e){}document.documentElement.lang=l;
+  $$("[data-l]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===l));$$("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));route()}
+function soon(){ $("#app").innerHTML=`<div class="card empty"><h2>${t("soon")}</h2><p>${t("soonP")}</p></div>`; }
+
+async function vList(){
+  const app=$("#app"), my=RID;
+  const {data,error}=await api.jobs(); if(my!==RID) return;
+  if(error){app.innerHTML=`<div class="msg err">${t("err")}</div>`;return}
+  JOBS=data||[];
+  const mine=myBids();
+  app.innerHTML=`<h1>${t("h1")}</h1><p class="lede">${t("lede")}</p>
+  ${JOBS.length?`<div class="jobs">${JOBS.map(j=>{const d=daysLeft(j.due_at);return `<a class="card job" href="#job=${j.id}"><div class="t"><b>${esc(j.title)}</b><div class="meta"><span>${esc(j.city||"")}${j.zip?" "+esc(j.zip):""}</span>${j.home_type?`<span>${esc(j.home_type)}</span>`:""}<span>${t("items")((j.scope||[]).length)}</span><span>${t("due")} ${fmtDate(j.due_at)}</span></div></div><span class="due${d>3?" ok":""}">${t("left")(d)}</span><span class="arrow">›</span></a>`}).join("")}</div>`
+  :`<div class="card empty">${t("none")}</div>`}
+  ${mine.length?`<h2 style="margin-top:28px">${t("yours")}</h2><div class="card" style="padding:6px 20px">${mine.map(m=>`<div class="row" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)"><span><b>${esc(m.title)}</b><span class="note" style="display:block">${t("submittedOn")} ${new Date(m.at).toLocaleDateString(L==="es"?"es-US":"en-US")} · ${money(m.total)}</span></span><a class="btn ghost sm" href="#bid=${m.token}">${t("open")}</a></div>`).join("")}</div>`:""}`;
+}
+
+function bidForm(j,prev){
+  const p=prev||{};const pm={};(p.items||[]).forEach(i=>pm[i.name]=i.price);
+  const scope=j.scope||[];
+  return `<div class="grid"><div>
+   <div class="card"><h2>${t("scope")}</h2><p class="note" style="margin:-4px 0 8px">${t("lineHelp")}</p>
+    <table class="items"><thead><tr><th>${t("item")}</th><th>${t("qty")}</th><th>${t("price")}</th></tr></thead><tbody>
+    ${scope.map((s,i)=>`<tr><td><span class="nm">${esc(s.name)}</span>${s.note?`<span class="nt">${esc(s.note)}</span>`:""}</td><td class="q">${esc(s.qty??"")} ${esc(s.unit||"")}</td><td class="p"><label class="pin"><span>$</span><input inputmode="decimal" data-i="${i}" value="${pm[s.name]!=null?esc(pm[s.name]):""}" aria-label="${t("price")}: ${esc(s.name)}"></label></td></tr>`).join("")}
+    </tbody></table>
+    <div class="total"><span>${t("total")}</span><span id="tot">$0</span></div></div>
+   <div class="card"><h2>${t("yourinfo")}</h2><div class="form">
+    <div class="f"><label for="bCo">${t("company")} *</label><input id="bCo" autocomplete="organization" value="${esc(p.company)}"></div>
+    <div class="f"><label for="bName">${t("contact")}</label><input id="bName" autocomplete="name" value="${esc(p.contact_name)}"></div>
+    <div class="f"><label for="bPh">${t("phone")} *</label><input id="bPh" type="tel" autocomplete="tel" value="${esc(p.phone)}"></div>
+    <div class="f"><label for="bEm">${t("email")}</label><input id="bEm" type="email" autocomplete="email" value="${esc(p.email)}"></div>
+    <div class="f"><label for="bCcb">${t("ccb")} *</label><input id="bCcb" inputmode="numeric" value="${esc(p.ccb)}"></div>
+    <div class="f"><label for="bStart">${t("start")}</label><input id="bStart" type="date" value="${esc(p.start_date)}"></div>
+    <div class="f"><label for="bDur">${t("dur")}</label><input id="bDur" type="number" min="0" max="365" inputmode="numeric" value="${esc(p.duration_days)}"></div>
+    <div class="f"><label for="bWar">${t("warranty")}</label><input id="bWar" placeholder="${t("warrantyPh")}" value="${esc(p.warranty)}"></div>
+    <div class="f w"><label for="bNotes">${t("notes")}</label><textarea id="bNotes" rows="3" placeholder="${t("notesPh")}">${esc(p.notes)}</textarea></div>
+    <div class="f w"><label for="bFile">${t("file")}</label><input id="bFile" type="file" accept="application/pdf,image/*"><small>${t("fileHelp")}</small></div>
+    <div class="hp" aria-hidden="true"><label>Website<input id="bWeb" tabindex="-1" autocomplete="off"></label></div>
+    <label class="chk w"><input type="checkbox" id="bAgree" ${prev?"checked":""}><span>${t("agree")}</span></label>
+   </div>
+   <div id="bMsg"></div>
+   <button class="btn or" id="bSend" style="width:100%;margin-top:8px">${prev?t("update"):t("send")}</button></div>
+  </div>
+  <aside class="sticky"><div class="card"><h2>${t("details")}</h2><dl>
+   ${j.city?`<dt>${t("city")}</dt><dd>${esc(j.city)}${j.zip?" "+esc(j.zip):""}</dd>`:""}
+   ${j.home_type?`<dt>${t("home")}</dt><dd>${esc(j.home_type)}</dd>`:""}
+   ${j.program?`<dt>${t("prog")}</dt><dd>${esc(j.program)}</dd>`:""}
+   <dt>${t("due")}</dt><dd>${fmtDate(j.due_at)}</dd></dl>
+   ${j.walkthrough?`<p style="margin:14px 0 0"><b>${t("walk")}:</b> ${esc(j.walkthrough)}</p>`:""}
+   ${j.details?`<p style="margin:10px 0 0;white-space:pre-wrap">${esc(j.details)}</p>`:""}
+   <p class="note" style="margin:12px 0 0">${t("addr")}</p></div></aside></div>`;
+}
+function wireForm(j,token){
+  const calc=()=>{let s=0;$$("[data-i]").forEach(i=>{const v=parseFloat(i.value.replace(/[^\d.]/g,""));if(v>0)s+=v});$("#tot").textContent=money(s);return s};
+  $$("[data-i]").forEach(i=>i.addEventListener("input",calc));calc();
+  $("#bSend").onclick=async()=>{
+    const m=$("#bMsg");m.innerHTML="";
+    if($("#bWeb").value) return; // bot
+    const items=(j.scope||[]).map((s,i)=>({name:s.name,price:($(`[data-i="${i}"]`).value||"").replace(/[^\d.]/g,"")})).filter(x=>x.price&&+x.price>0);
+    const v=id=>$(id).value.trim();
+    if(!v("#bCo")||!v("#bPh")||!v("#bCcb")||!items.length){m.innerHTML=`<div class="msg err">${t("req")}</div>`;return}
+    if(!$("#bAgree").checked){m.innerHTML=`<div class="msg err">${t("agreeReq")}</div>`;return}
+    const f=$("#bFile").files[0]; if(f&&f.size>10485760){m.innerHTML=`<div class="msg err">${t("big")}</div>`;return}
+    const btn=$("#bSend");btn.disabled=true;btn.textContent=t("sending");
+    try{
+      let file_path="";
+      if(f){const ext=(f.name.split(".").pop()||"pdf").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,5);
+        file_path=`${j.id}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+        const up=await api.upload(file_path,f); if(up.error) file_path="";}
+      const p={job_id:j.id,token:token||"",company:v("#bCo"),contact_name:v("#bName"),phone:v("#bPh"),email:v("#bEm"),ccb:v("#bCcb"),lang:L,items,
+        start_date:v("#bStart"),duration_days:v("#bDur"),warranty:v("#bWar"),notes:v("#bNotes"),file_path};
+      const {data,error}=await api.submit(p);
+      if(error) throw error;
+      rememberBid({token:data.token,title:j.title,total:data.total,at:Date.now()});
+      location.hash="bid="+data.token+"&new=1";
+    }catch(e){m.innerHTML=`<div class="msg err">${esc((e&&e.message)||t("err"))}</div>`;btn.disabled=false;btn.textContent=token?t("update"):t("send")}
+  };
+}
+async function vJob(id){
+  const my=RID;
+  if(!JOBS.length){const {data}=await api.jobs(); if(my!==RID) return; JOBS=data||[]}
+  const j=JOBS.find(x=>x.id===id||x.code===id);
+  if(!j){$("#app").innerHTML=`<button class="crumb" onclick="location.hash=''">${t("back")}</button><div class="card empty">${t("closed")}</div>`;return}
+  $("#app").innerHTML=`<button class="crumb" onclick="location.hash=''">${t("back")}</button><h1>${esc(j.title)}</h1><p class="lede">${esc(j.city||"")} · ${t("due")} ${fmtDate(j.due_at)}</p>`+bidForm(j);
+  wireForm(j);
+}
+async function vBid(tok,isNew,editing){
+  const my=RID;
+  const {data,error}=await api.get(tok); if(my!==RID) return;
+  if(error||!data){$("#app").innerHTML=`<div class="card empty">${t("notfound")}</div>`;return}
+  const b=data; const canEdit=b.job_status==="open"&&new Date(b.due_at)>new Date()&&["submitted","reviewing","withdrawn"].includes(b.status);
+  if(editing&&canEdit){
+    $("#app").innerHTML=`<button class="crumb" onclick="location.hash='bid=${tok}'">‹ ${esc(b.title)}</button><h1>${esc(b.title)}</h1>`+bidForm({id:b.job_id,title:b.title,city:b.city,scope:b.scope,due_at:b.due_at},b);
+    wireForm({id:b.job_id,title:b.title,scope:b.scope},tok);return;
+  }
+  const link=location.href.split("#")[0]+"#bid="+tok;
+  rememberBid({token:tok,title:b.title,total:b.total,at:new Date(b.created_at).getTime()});
+  $("#app").innerHTML=`<button class="crumb" onclick="location.hash=''">${t("back")}</button>
+  ${isNew?`<div class="card" style="border-color:var(--ok)"><h2 style="color:var(--ok)">${t("thanks")}</h2><p style="margin:0 0 6px">${t("thanksP")}</p><div class="receipt" id="rLink">${esc(link)}</div><div class="row"><button class="btn sm" id="rCopy">${t("copy")}</button></div></div>`:""}
+  <h1>${esc(b.title)}</h1><p class="lede">${esc(b.city||"")} · ${t("due")} ${fmtDate(b.due_at)}</p>
+  <div class="grid"><div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${t("status")}</h2><span class="status ${b.status}">${t("st")[b.status]}</span></div>
+   <p>${t("stP")[b.status]}</p>
+   <table class="items"><tbody>${(b.items||[]).map(i=>`<tr><td class="nm">${esc(i.name)}</td><td style="text-align:right;font-weight:600">${money(i.price)}</td></tr>`).join("")}</tbody></table>
+   <div class="total"><span>${t("bidTotal")}</span><span>${money(b.total)}</span></div>
+   ${canEdit?`<div class="row" style="margin-top:16px"><a class="btn ghost sm" href="#bid=${tok}&edit=1">${t("edit")}</a>${b.status!=="withdrawn"?`<button class="btn ghost sm" id="wd" style="color:var(--bad)">${t("withdraw")}</button>`:""}</div><div id="wdMsg"></div>`:""}
+  </div>
+  <aside class="card"><dl><dt>${t("company")}</dt><dd>${esc(b.company)}</dd><dt>${t("ccb")}</dt><dd>${esc(b.ccb)}</dd><dt>${t("phone")}</dt><dd>${esc(b.phone)}</dd>
+   ${b.start_date?`<dt>${t("start")}</dt><dd>${esc(b.start_date)}</dd>`:""}${b.duration_days!=null?`<dt>${t("dur")}</dt><dd>${esc(b.duration_days)}</dd>`:""}
+   <dt>${t("submittedOn")}</dt><dd>${new Date(b.updated_at||b.created_at).toLocaleString(L==="es"?"es-US":"en-US")}</dd></dl>
+   ${!isNew?`<div class="receipt" id="rLink" style="margin-top:14px">${esc(link)}</div><button class="btn ghost sm" id="rCopy">${t("copy")}</button>`:""}</aside></div>`;
+  const c=$("#rCopy"); if(c) c.onclick=async()=>{try{await navigator.clipboard.writeText(link)}catch(e){} c.textContent=t("copied")};
+  const w=$("#wd"); if(w){let armed=false; w.onclick=async()=>{ if(!armed){armed=true;$("#wdMsg").innerHTML=`<div class="msg info">${t("withdrawQ")}</div>`;return}
+    const r=await api.withdraw(tok); if(r.error){$("#wdMsg").innerHTML=`<div class="msg err">${t("err")}</div>`;return} vBid(tok)}}
+}
+function route(){
+  RID++;
+  if(!sb) return soon();
+  const h=new URLSearchParams(location.hash.slice(1));
+  window.scrollTo(0,0);
+  if(h.get("bid")) return vBid(h.get("bid"),h.get("new")==="1",h.get("edit")==="1");
+  if(h.get("job")) return vJob(h.get("job"));
+  return vList();
+}
+$$("[data-l]").forEach(b=>b.onclick=()=>setLang(b.dataset.l));
+window.addEventListener("hashchange",route);
+setLang(L);
+</script>
+</body>
+</html>
