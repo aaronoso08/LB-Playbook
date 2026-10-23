@@ -225,7 +225,8 @@ function wireForm(j,token){
 async function vJob(id){
   const my=RID;
   if(!JOBS.length){const {data}=await api.jobs(); if(my!==RID) return; JOBS=(data||[]).filter(j=>new Date(j.due_at)>new Date())}
-  const j=JOBS.find(x=>x.id===id||x.code===id);
+  let j=JOBS.find(x=>x.id===id||x.code===id);
+  if(!j){const {data}=await api.jobs(); if(my!==RID) return; JOBS=(data||[]).filter(x=>new Date(x.due_at)>new Date()); j=JOBS.find(x=>x.id===id||x.code===id)}
   if(!j){$("#app").innerHTML=`<button class="crumb" onclick="location.hash=''">${t("back")}</button><div class="card empty">${t("closed")}</div>`;return}
   $("#app").innerHTML=`<button class="crumb" onclick="location.hash=''">${t("back")}</button><h1>${esc(j.title)}</h1><p class="lede">${esc(j.city||"")} · ${t("due")} ${fmtDate(j.due_at)}</p>`+bidForm(j);
   wireForm(j);

@@ -1,3 +1,9 @@
+-- ======================================================================
+-- OLD FILE. DO NOT RUN. Replaced by team_update_3.sql (personal logins).
+-- Running this again would let anyone post as anyone, so it stops itself.
+-- ======================================================================
+do $stop$ begin raise exception 'This is the old team update. It was replaced by team_update_3.sql. Nothing was changed.'; end $stop$;
+
 -- Latino Built Team Playbook: update 2 (team board, polls, games). Safe to run again.
 -- Only people with the playbook password have the team code these functions check.
 
