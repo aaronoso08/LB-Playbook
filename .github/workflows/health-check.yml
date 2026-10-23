@@ -7,6 +7,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check what the public (not signed in) can see
         run: |
+          exec > >(tee out1.txt) 2>&1
           URL=$(grep -oE 'url: *"[^"]+"' bids/config.js | cut -d'"' -f2)
           KEY=$(grep -oE 'anonKey: *"[^"]+"' bids/config.js | cut -d'"' -f2)
           H=(-H "apikey: $KEY" -H "Authorization: Bearer $KEY")
@@ -25,6 +26,14 @@ jobs:
           echo "STORAGE list -> $(curl -s -w ' HTTP%{http_code}' -X POST "$URL/storage/v1/object/list/bid-files" "${H[@]}" -H 'Content-Type: application/json' -d '{"prefix":"","limit":5}' | head -c 250)"
       - name: Live website
         run: |
+          exec > >(tee out2.txt) 2>&1
           for u in https://aaronoso08.github.io/LB-Playbook/ https://aaronoso08.github.io/LB-Playbook/bids/ https://aaronoso08.github.io/LB-Playbook/sw.js https://aaronoso08.github.io/LB-Playbook/manifest.json https://aaronoso08.github.io/LB-Playbook/bids/config.js https://aaronoso08.github.io/ProSource/ https://latinobuilt.org/wp-content/uploads/2026/08/AaronHeadshot_Website-300x300.jpg https://latinobuilt.org/wp-content/uploads/2026/08/CristianHeadshot_Website-300x300.jpg https://latinobuilt.org/wp-content/uploads/2026/08/JoseHeadshot_Website-1-300x300.jpg; do
             echo "$(curl -s -o /dev/null -w '%{http_code} %{size_download}b' "$u") $u"; done
           curl -s https://aaronoso08.github.io/LB-Playbook/ | grep -c 'Work email' | sed 's/^/live page has email sign-in: /'
+      - name: Report
+        if: always()
+        run: |
+          for f in out1.txt out2.txt; do
+            split -l 12 $f part_
+            for p in part_*; do m=$(sed -e 's/%/%25/g' "$p" | cut -c1-260 | awk '{printf "%s%%0A",$0}'); echo "::notice title=$f::$m"; rm "$p"; done
+          done
