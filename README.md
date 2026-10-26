@@ -8,4 +8,11 @@ Staff-only hub for Latino Built. The page is encrypted (AES-256), so this repo o
 - Staff list: the bid board and the Playbook share one list (`team_member`). Turning someone off there removes both. `bid_staff` is just an automatic copy.
 - Job alerts: contractors sign up on the bid page (text and/or email, trades, areas, language) and get a private link to change or stop. Only staff can see the list.
 - Jobs past their bid deadline close on their own (the bid page and the daily keep-awake job both tidy them up).
-- The staff list and page key are set up from a private file that is never stored here.
+- The page key lives only in Supabase (`team_vault`). Admins can see it with `select page_key from team_vault;`.
+- `tools/playbook.py` opens (unscrambles) the page for editing and seals it again. No secrets are stored in it. Never commit the unscrambled `playbook_source.html`.
+- There is no shared team password anymore. Everyone signs in with their own work email.
+
+## When someone leaves the team
+1. In Supabase SQL Editor: `update team_member set active = false where email = 'their.email@latinobuilt.org';` (this also removes them from the bid board).
+2. Change the page key: open the page with the current key, then `python3 tools/playbook.py seal --new-key`, push, wait about 2 minutes for the site to update.
+3. Paste the SQL line it prints into Supabase and Run. Everyone else signs in again once; the old key stops working.
