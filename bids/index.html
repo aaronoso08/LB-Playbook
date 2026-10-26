@@ -74,6 +74,13 @@ h2{font-size:20px;margin:0 0 10px;letter-spacing:-.01em}
 dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14.5px}dt{color:var(--muted)}dd{margin:0;font-weight:600}
 footer{max-width:980px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:13px}
 .sticky{position:sticky;top:12px}
+.alert{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--soft);border-color:transparent}
+.alert .t{flex:1;min-width:220px}.alert b{font-size:16px}
+.picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.pick{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:14.5px;background:var(--surface)}
+.pick input{width:18px;height:18px;accent-color:var(--orange);flex:none;margin:0}
+.pick:has(input:checked){border-color:var(--orange);background:var(--warnbg)}
+fieldset{border:0;padding:0;margin:0 0 16px}legend{font-weight:700;font-size:14px;margin-bottom:8px}legend small{font-weight:400;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -86,7 +93,16 @@ footer{max-width:980px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 const T={
- es:{sub:"Trabajos para contratistas",foot:"Latino Built · Asociación de contratistas latinos de Oregon y el suroeste de Washington",
+ es:{alerts:"Avisos de trabajos nuevos",alertsP:"Reciba un texto o correo cuando publiquemos un trabajo de su oficio en su área.",alertsBtn:"Recibir avisos",alertsEdit:"Mis avisos",
+  alertsH:"Avisos de trabajos nuevos",alertsLede:"Le avisamos cuando haya un trabajo nuevo para ofertar. Gratis. Puede cambiar o cancelar cuando quiera.",
+  how:"¿Cómo quiere recibirlos?",byText:"Mensaje de texto",byEmail:"Correo electrónico",tradesL:"Sus oficios",areasL:"Dónde trabaja",anyHelp:"(si no marca nada, recibe todos)",
+  consent:"Acepto recibir textos y/o correos de Latino Built sobre trabajos nuevos. Pueden aplicar tarifas de mensajes. Puedo cancelar en cualquier momento.",
+  saveAlerts:"Guardar mis avisos",saving:"Guardando…",alertsReq:"Llene el nombre de la compañía y elija texto, correo o ambos.",consentReq:"Marque la casilla para aceptar los avisos.",
+  alertsOk:"¡Listo! Le avisaremos de trabajos nuevos.",alertsOkP:"Guarde este enlace para cambiar o cancelar sus avisos.",stop:"Cancelar mis avisos",stopQ:"¿Seguro? Toque otra vez para cancelar los avisos.",
+  stopped:"Sus avisos están cancelados. Puede volver a activarlos guardando de nuevo.",alertsNF:"No encontramos esos avisos. Puede registrarse de nuevo.",
+  tr:{general:"Reparaciones generales y carpintería",roofing:"Techos",hvac:"Calefacción, aire y bombas de calor",insulation:"Aislamiento y sellado de aire",windows:"Ventanas y puertas",plumbing:"Plomería y calentadores de agua",electrical:"Electricidad",accessibility:"Accesibilidad (rampas, barras)",siding:"Revestimiento y pintura"},
+  ar:{portland:"Área de Portland",sw_wa:"Suroeste de Washington",valley:"Salem y el Valle Willamette",coast:"Costa de Oregon",other:"Otras áreas"},
+  sub:"Trabajos para contratistas",foot:"Latino Built · Asociación de contratistas latinos de Oregon y el suroeste de Washington",
   h1:"Trabajos abiertos",lede:"Proyectos de reparación de vivienda que buscan ofertas de contratistas. Revise el alcance, ponga su precio por partida y envíe su oferta.",
   none:"No hay trabajos abiertos ahora. Vuelva pronto.",due:"Cierra",left:d=>d<=0?"Cierra hoy":d===1?"Cierra mañana":`Quedan ${d} días`,items:n=>`${n} partida${n===1?"":"s"}`,
   view:"Ver y ofertar",back:"‹ Todos los trabajos",scope:"Alcance del trabajo",item:"Partida",qty:"Cantidad",price:"Su precio",total:"Total",
@@ -101,7 +117,16 @@ const T={
   edit:"Cambiar mi oferta",withdraw:"Retirar oferta",withdrawQ:"¿Seguro que quiere retirar esta oferta? Toque otra vez para confirmar.",notfound:"No encontramos esa oferta. Revise el enlace.",
   closed:"Este trabajo ya no recibe ofertas.",soon:"El sistema de ofertas estará listo pronto.",soonP:"Mientras tanto, llame a Latino Built al (503) 889-0511.",err:"Algo salió mal. Intente otra vez.",
   addr:"La dirección exacta se comparte con el contratista seleccionado.",submittedOn:"Enviada",bidTotal:"Su total",city:"Ciudad",home:"Tipo de casa",prog:"Programa",lineHelp:"Ponga el precio total de cada partida (no por unidad)."},
- en:{sub:"Jobs for contractors",foot:"Latino Built · Latino contractor association of Oregon and SW Washington",
+ en:{alerts:"New job alerts",alertsP:"Get a text or email when we post a job in your trade and area.",alertsBtn:"Get alerts",alertsEdit:"My alerts",
+  alertsH:"New job alerts",alertsLede:"We'll let you know when there's a new job to bid on. Free. Change or stop anytime.",
+  how:"How do you want them?",byText:"Text message",byEmail:"Email",tradesL:"Your trades",areasL:"Where you work",anyHelp:"(leave blank to get all)",
+  consent:"I agree to get texts and/or emails from Latino Built about new jobs. Message rates may apply. I can stop anytime.",
+  saveAlerts:"Save my alerts",saving:"Saving…",alertsReq:"Fill in company name and choose text, email or both.",consentReq:"Check the box to agree to alerts.",
+  alertsOk:"You're set! We'll let you know about new jobs.",alertsOkP:"Save this link to change or stop your alerts.",stop:"Stop my alerts",stopQ:"Are you sure? Tap again to stop alerts.",
+  stopped:"Your alerts are stopped. Save again anytime to turn them back on.",alertsNF:"We couldn't find those alerts. You can sign up again.",
+  tr:{general:"General repairs & carpentry",roofing:"Roofing",hvac:"Heating, cooling & heat pumps",insulation:"Insulation & air sealing",windows:"Windows & doors",plumbing:"Plumbing & water heaters",electrical:"Electrical",accessibility:"Accessibility (ramps, grab bars)",siding:"Siding & painting"},
+  ar:{portland:"Portland metro",sw_wa:"SW Washington",valley:"Salem & Willamette Valley",coast:"Oregon Coast",other:"Other areas"},
+  sub:"Jobs for contractors",foot:"Latino Built · Latino contractor association of Oregon and SW Washington",
   h1:"Open jobs",lede:"Home repair projects looking for contractor bids. Review the scope, price each line item and send your bid.",
   none:"No open jobs right now. Check back soon.",due:"Closes",left:d=>d<=0?"Closes today":d===1?"Closes tomorrow":`${d} days left`,items:n=>`${n} item${n===1?"":"s"}`,
   view:"View and bid",back:"‹ All jobs",scope:"Scope of work",item:"Item",qty:"Qty",price:"Your price",total:"Total",
@@ -136,6 +161,9 @@ const api={
   closeExpired:()=>sb.rpc("close_expired_bid_jobs").then(()=>{},()=>{}),
   jobs:()=>sb.from("bid_jobs").select("id,code,title,city,zip,home_type,program,scope,details,walkthrough,due_at,status").eq("status","open").order("due_at",{ascending:true}),
   submit:p=>sb.rpc("submit_bid",{p}),
+  saveAlerts:p=>sb.rpc("save_alerts",{p}),
+  getAlerts:tok=>sb.rpc("get_alerts",{t:tok}),
+  stopAlerts:tok=>sb.rpc("stop_alerts",{t:tok}),
   get:tok=>sb.rpc("get_bid",{t:tok}),
   withdraw:tok=>sb.rpc("withdraw_bid",{t:tok}),
   upload:(path,file)=>sb.storage.from("bid-files").upload(path,file,{upsert:false,contentType:file.type||"application/octet-stream"})
@@ -155,7 +183,9 @@ async function vList(){
   if(error){app.innerHTML=`<div class="msg err">${t("err")}</div>`;return}
   JOBS=(data||[]).filter(j=>new Date(j.due_at)>new Date());
   const mine=myBids();
+  const al=store.get("lbb-alerts",null);
   app.innerHTML=`<h1>${t("h1")}</h1><p class="lede">${t("lede")}</p>
+  <div class="card alert"><div class="t"><b>🔔 ${t("alerts")}</b><div class="note">${t("alertsP")}</div></div><a class="btn or sm" href="#alerts${al?"="+al:""}">${al?t("alertsEdit"):t("alertsBtn")}</a></div>
   ${JOBS.length?`<div class="jobs">${JOBS.map(j=>{const d=daysLeft(j.due_at);return `<a class="card job" href="#job=${j.id}"><div class="t"><b>${esc(j.title)}</b><div class="meta"><span>${esc(j.city||"")}${j.zip?" "+esc(j.zip):""}</span>${j.home_type?`<span>${esc(j.home_type)}</span>`:""}<span>${t("items")((j.scope||[]).length)}</span><span>${t("due")} ${fmtDate(j.due_at)}</span></div></div><span class="due${d>3?" ok":""}">${t("left")(d)}</span><span class="arrow">›</span></a>`}).join("")}</div>`
   :`<div class="card empty">${t("none")}</div>`}
   ${mine.length?`<h2 style="margin-top:28px">${t("yours")}</h2><div class="card" style="padding:6px 20px">${mine.map(m=>`<div class="row" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)"><span><b>${esc(m.title)}</b><span class="note" style="display:block">${t("submittedOn")} ${new Date(m.at).toLocaleDateString(L==="es"?"es-US":"en-US")} · ${money(m.total)}</span></span><a class="btn ghost sm" href="#bid=${m.token}">${t("open")}</a></div>`).join("")}</div>`:""}`;
@@ -260,6 +290,69 @@ async function vBid(tok,isNew,editing){
   const w=$("#wd"); if(w){let armed=false; w.onclick=async()=>{ if(!armed){armed=true;$("#wdMsg").innerHTML=`<div class="msg info">${t("withdrawQ")}</div>`;return}
     const r=await api.withdraw(tok); if(r.error){$("#wdMsg").innerHTML=`<div class="msg err">${t("err")}</div>`;return} vBid(tok)}}
 }
+
+const TRADES=["general","roofing","hvac","insulation","windows","plumbing","electrical","accessibility","siding"];
+const AREAS=["portland","sw_wa","valley","coast","other"];
+async function vAlerts(tok,isNew){
+  const app=$("#app"), my=RID;
+  let prev=null, stopped=false, nf=false;
+  if(tok){
+    const {data,error}=await api.getAlerts(tok); if(my!==RID) return;
+    if(error||!data){store.set("lbb-alerts",null);tok=null;nf=true}
+    else {prev=data;stopped=!data.active}
+  }
+  const me=store.get("lbb-me",{}), p=prev||{company:me.company,name:me.contact_name,phone:me.phone,email:me.email,ccb:me.ccb,by_text:true,by_email:!!me.email,trades:[],areas:[]};
+  const has=(arr,v)=>(arr||[]).includes(v);
+  const link=tok?location.href.split("#")[0]+"#alerts="+tok:"";
+  app.innerHTML=(nf?`<div class="msg info">${t("alertsNF")}</div>`:"")+`<button class="crumb" onclick="location.hash=''">${t("back")}</button>
+  <h1>${t("alertsH")}</h1><p class="lede">${t("alertsLede")}</p>
+  ${isNew?`<div class="msg ok"><b>${t("alertsOk")}</b><br>${t("alertsOkP")}<div class="receipt">${esc(link)}</div><button class="btn ghost sm" id="aCopy">${t("copy")}</button></div>`:""}
+  ${stopped?`<div class="msg info">${t("stopped")}</div>`:""}
+  <div class="card">
+   <fieldset><legend>${t("how")}</legend><div class="picks">
+    <label class="pick"><input type="checkbox" id="aText" ${p.by_text?"checked":""}>📱 ${t("byText")}</label>
+    <label class="pick"><input type="checkbox" id="aMail" ${p.by_email?"checked":""}>✉️ ${t("byEmail")}</label></div></fieldset>
+   <div class="form" style="margin-bottom:16px">
+    <div class="f"><label for="aCo">${t("company")} *</label><input id="aCo" autocomplete="organization" value="${esc(p.company)}"></div>
+    <div class="f"><label for="aName">${t("contact")}</label><input id="aName" autocomplete="name" value="${esc(p.name)}"></div>
+    <div class="f"><label for="aPh">${t("phone")}</label><input id="aPh" type="tel" autocomplete="tel" value="${esc(p.phone)}"></div>
+    <div class="f"><label for="aEm">${t("email")}</label><input id="aEm" type="email" autocomplete="email" value="${esc(p.email)}"></div>
+    <div class="f"><label for="aCcb">${t("ccb")}</label><input id="aCcb" inputmode="numeric" value="${esc(p.ccb)}"></div>
+   </div>
+   <fieldset><legend>${t("tradesL")} <small>${t("anyHelp")}</small></legend><div class="picks">
+    ${TRADES.map(k=>`<label class="pick"><input type="checkbox" data-tr="${k}" ${has(p.trades,k)?"checked":""}>${esc(t("tr")[k])}</label>`).join("")}</div></fieldset>
+   <fieldset><legend>${t("areasL")} <small>${t("anyHelp")}</small></legend><div class="picks">
+    ${AREAS.map(k=>`<label class="pick"><input type="checkbox" data-ar="${k}" ${has(p.areas,k)?"checked":""}>${esc(t("ar")[k])}</label>`).join("")}</div></fieldset>
+   <div class="hp" aria-hidden="true"><label>Website<input id="aWeb" tabindex="-1" autocomplete="off"></label></div>
+   <label class="chk"><input type="checkbox" id="aOk" ${prev?"checked":""}><span>${t("consent")}</span></label>
+   <div id="aMsg"></div>
+   <div class="row" style="margin-top:14px"><button class="btn or" id="aSave">${t("saveAlerts")}</button>
+    ${tok&&!stopped?`<button class="btn ghost" id="aStop">${t("stop")}</button>`:""}</div>
+  </div>`;
+  const cp=$("#aCopy"); if(cp) cp.onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(link);cp.textContent=t("copied")};
+  $("#aSave").onclick=async()=>{
+    const m=$("#aMsg"); m.innerHTML="";
+    if($("#aWeb").value) return; // bot
+    const v=id=>$(id).value.trim();
+    if(!v("#aCo")||(!$("#aText").checked&&!$("#aMail").checked)){m.innerHTML=`<div class="msg err">${t("alertsReq")}</div>`;return}
+    if(!$("#aOk").checked){m.innerHTML=`<div class="msg err">${t("consentReq")}</div>`;return}
+    const btn=$("#aSave");btn.disabled=true;btn.textContent=t("saving");
+    try{
+      const body={token:tok||"",company:v("#aCo"),name:v("#aName"),phone:v("#aPh"),email:v("#aEm"),ccb:v("#aCcb"),lang:L,
+        by_text:$("#aText").checked,by_email:$("#aMail").checked,consent:true,
+        trades:$$("[data-tr]").filter(x=>x.checked).map(x=>x.dataset.tr),areas:$$("[data-ar]").filter(x=>x.checked).map(x=>x.dataset.ar)};
+      const {data,error}=await api.saveAlerts(body); if(error) throw error;
+      store.set("lbb-alerts",data.token);
+      store.set("lbb-me",Object.assign(store.get("lbb-me",{}),{company:body.company,contact_name:body.name,phone:body.phone,email:body.email,ccb:body.ccb}));
+      if(location.hash==="#alerts="+data.token+"&new=1") route(); else location.hash="alerts="+data.token+"&new=1";
+    }catch(e){m.innerHTML=`<div class="msg err">${esc((e&&e.message)||t("err"))}</div>`;btn.disabled=false;btn.textContent=t("saveAlerts")}
+  };
+  const st=$("#aStop"); if(st){let armed=false;st.onclick=async()=>{
+    if(!armed){armed=true;st.textContent=t("stopQ");return}
+    st.disabled=true; await api.stopAlerts(tok); location.hash="alerts="+tok; route();
+  }}
+}
+
 function route(){
   RID++;
   if(!sb) return soon();
@@ -267,6 +360,7 @@ function route(){
   window.scrollTo(0,0);
   if(h.get("bid")) return vBid(h.get("bid"),h.get("new")==="1",h.get("edit")==="1");
   if(h.get("job")) return vJob(h.get("job"));
+  if(h.has("alerts")) return vAlerts(h.get("alerts")||store.get("lbb-alerts",null),h.get("new")==="1");
   return vList();
 }
 $$("[data-l]").forEach(b=>b.onclick=()=>setLang(b.dataset.l));
