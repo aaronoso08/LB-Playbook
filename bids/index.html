@@ -133,6 +133,7 @@ let sb=null;
 if(window.__BIDMOCK) sb=window.__BIDMOCK;
 else if(CFG.url&&CFG.anonKey&&window.supabase) sb=window.supabase.createClient(CFG.url,CFG.anonKey,{auth:{persistSession:false}});
 const api={
+  closeExpired:()=>sb.rpc("close_expired_bid_jobs").then(()=>{},()=>{}),
   jobs:()=>sb.from("bid_jobs").select("id,code,title,city,zip,home_type,program,scope,details,walkthrough,due_at,status").eq("status","open").order("due_at",{ascending:true}),
   submit:p=>sb.rpc("submit_bid",{p}),
   get:tok=>sb.rpc("get_bid",{t:tok}),
@@ -209,7 +210,7 @@ function wireForm(j,token){
     const btn=$("#bSend");btn.disabled=true;btn.textContent=t("sending");
     try{
       let file_path="";
-      if(f){const ext=(f.name.split(".").pop()||"pdf").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,5);
+      if(f){const ext=(f.name.split(".").pop()||"pdf").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,5)||"pdf";
         file_path=`${j.id}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
         const up=await api.upload(file_path,f); if(up.error) file_path="";}
       const p={job_id:j.id,token:token||"",company:v("#bCo"),contact_name:v("#bName"),phone:v("#bPh"),email:v("#bEm"),ccb:v("#bCcb"),lang:L,items,
@@ -271,6 +272,7 @@ function route(){
 $$("[data-l]").forEach(b=>b.onclick=()=>setLang(b.dataset.l));
 window.addEventListener("hashchange",route);
 setLang(L);
+if(sb&&!window.__BIDMOCK){try{api.closeExpired()}catch(e){}} // tidy up jobs past their deadline
 </script>
 </body>
 </html>

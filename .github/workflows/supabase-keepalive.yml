@@ -1,5 +1,6 @@
 # Keeps the free Supabase project awake. Free projects pause after 7 days with no activity,
 # so this asks the bid board for one open job every morning. It reads only public info.
+# It also closes any jobs whose bid deadline has passed (bid_board_update_2.sql).
 name: Keep bid board awake
 on:
   schedule:
@@ -15,3 +16,6 @@ jobs:
           curl -fsS "https://uptrzajrneoarbchmbkp.supabase.co/rest/v1/bid_jobs?select=id&limit=1" \
             -H "apikey: $KEY" -H "Authorization: Bearer $KEY"
           echo " Bid board is awake."
+          CLOSED=$(curl -sS -X POST "https://uptrzajrneoarbchmbkp.supabase.co/rest/v1/rpc/close_expired_bid_jobs" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d '{}' || true)
+          echo "Expired jobs closed: $CLOSED"
