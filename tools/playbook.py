@@ -11,9 +11,13 @@ lives in this file or in the repo; you pass the key in when you run it.
   Seal it again with the SAME key (normal edits):
     python3 tools/playbook.py seal  --key "<page key>" --src playbook_source.html
 
-  Seal it with a NEW key (someone left the team):
-    python3 tools/playbook.py seal  --new-key --src playbook_source.html
+  Seal it with a NEW key (someone left the team). Pass the current key too,
+  so the private documents in docs/ get re-scrambled with the new one:
+    python3 tools/playbook.py seal  --new-key --key "<current key>" --src playbook_source.html
     -> prints the SQL line to paste into Supabase so staff get the new key.
+
+  Add or replace a private document (PDF etc.), stored scrambled in docs/:
+    python3 tools/playbook.py doc   --key "<page key>" --id hhgp-faqs --file HHGP_FAQs.pdf
 
 Never commit playbook_source.html. It is the unscrambled page.
 Needs: pip install cryptography
@@ -46,6 +50,34 @@ def _key_bytes(k):
     return raw
 
 
+DOCS = os.path.join(HERE, "..", "docs")
+
+
+def _enc_doc(raw, data):
+    iv = os.urandom(12)
+    return iv + AESGCM(raw).encrypt(iv, data, None)
+
+
+def _dec_doc(raw, blob):
+    return AESGCM(raw).decrypt(blob[:12], blob[12:], None)
+
+
+def cmd_doc(a):
+    """Add or replace one private document (stored scrambled in docs/<id>.bin)."""
+    raw = _key_bytes(a.key)
+    s = open(INDEX, encoding="utf-8").read(); d = _read_data(s)
+    try:
+        AESGCM(raw).decrypt(base64.b64decode(d["iv"]), base64.b64decode(d["ct"]), None)
+    except Exception:
+        sys.exit("Wrong key: it doesn't unlock this page, so documents would not open either.")
+    if not re.fullmatch(r"[a-z0-9-]{3,60}", a.id):
+        sys.exit("Use a short id with lowercase letters, numbers and dashes.")
+    os.makedirs(DOCS, exist_ok=True)
+    out = os.path.join(DOCS, a.id + ".bin")
+    open(out, "wb").write(_enc_doc(raw, open(a.file, "rb").read()))
+    print(f"Saved docs/{a.id}.bin (scrambled). Add it to the DOCS list in the page if it's new.")
+
+
 def cmd_open(a):
     s = open(INDEX, encoding="utf-8").read()
     d = _read_data(s)
@@ -62,6 +94,14 @@ def cmd_open(a):
 def cmd_seal(a):
     if a.new_key:
         raw = os.urandom(32)
+        bins = sorted(f for f in os.listdir(DOCS) if f.endswith(".bin")) if os.path.isdir(DOCS) else []
+        if bins and not a.key:
+            sys.exit("There are private documents in docs/. Pass the CURRENT key with --key so they can be re-scrambled with the new one.")
+        for f in bins:
+            pth = os.path.join(DOCS, f)
+            open(pth, "wb").write(_enc_doc(raw, _dec_doc(_key_bytes(a.key), open(pth, "rb").read())))
+        if bins:
+            print(f"Re-scrambled {len(bins)} documents with the new key.")
     elif a.key:
         raw = _key_bytes(a.key)
     else:
@@ -89,5 +129,6 @@ def cmd_seal(a):
 p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 sp = p.add_subparsers(dest="cmd", required=True)
 o = sp.add_parser("open"); o.add_argument("--key", required=True); o.add_argument("--out", default="playbook_source.html"); o.set_defaults(f=cmd_open)
+dc = sp.add_parser("doc"); dc.add_argument("--key", required=True); dc.add_argument("--id", required=True); dc.add_argument("--file", required=True); dc.set_defaults(f=cmd_doc)
 c = sp.add_parser("seal"); c.add_argument("--key"); c.add_argument("--new-key", action="store_true"); c.add_argument("--src", default="playbook_source.html"); c.set_defaults(f=cmd_seal)
 a = p.parse_args(); a.f(a)
