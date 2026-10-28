@@ -104,3 +104,6 @@ begin
     execute format('grant execute on function public.%s to authenticated', f);
   end loop;
 end $do$;
+
+-- Old shared-password check from update 2 is no longer used; make sure nobody can call it.
+revoke all on function public.team_ok(text) from public, anon, authenticated;
