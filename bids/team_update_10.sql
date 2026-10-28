@@ -87,7 +87,8 @@ end; $fn$;
 create or replace function public.team_meeting_list(tok text, p jsonb) returns jsonb
 language plpgsql security definer set search_path = public as $fn$
 declare m public.team_member; q text := lower(trim(coalesce(p->>'q',''))); v_kind text := nullif(p->>'kind','');
-        v_tag text := lower(nullif(trim(coalesce(p->>'tag','')),'')); nxt date := public.team_next_monday();
+        v_tag text := lower(nullif(trim(coalesce(p->>'tag','')),'')); nxt date := coalesce(nullif(p->>'next_on','')::date, public.team_next_monday());
+        v_sum boolean := coalesce((p->>'summary')::boolean, false);
 begin
   m := public.team_need();
   return jsonb_build_object(
@@ -99,14 +100,14 @@ begin
        'note_taker', coalesce((select note_taker from public.team_meetings where kind = 'staff' and meet_on = nxt
                                and note_taker is not null order by created_at limit 1), public.team_rotation_pick(nxt))),
     'tags', coalesce((select jsonb_agg(t order by t) from (select distinct unnest(tags) t from public.team_meetings) s), '[]'::jsonb),
-    'meetings', coalesce((select jsonb_agg(r order by (r->>'meet_on') desc, (r->>'created_at') desc) from (
+    'meetings', case when v_sum then '[]'::jsonb else coalesce((select jsonb_agg(r order by (r->>'meet_on') desc, (r->>'created_at') desc) from (
        select jsonb_build_object('id', x.id, 'meet_on', x.meet_on, 'title', x.title, 'kind', x.kind,
                 'note_taker', x.note_taker, 'tags', to_jsonb(x.tags), 'created_at', x.created_at,
                 'open', (select count(*) from public.team_tasks t where t.meeting_id = x.id and t.status = 'open'),
                 'actions', (select count(*) from public.team_tasks t where t.meeting_id = x.id),
                 'snip', case when q = '' then null else (
                    select substr(txt, greatest(1, strpos(lower(txt), q) - 70), 200)
-                   from (select concat_ws(' · ', x.title, x.agenda, x.notes, x.decisions,
+                   from (select concat_ws(' · ', x.title, nullif(x.agenda,''), nullif(x.notes,''), nullif(x.decisions,''),
                           (select string_agg(value, ' · ') from jsonb_each_text(x.sections)),
                           (select string_agg(t.title, ' · ') from public.team_tasks t where t.meeting_id = x.id)) txt) z
                    where strpos(lower(txt), q) > 0) end) r
@@ -117,7 +118,7 @@ begin
                 array_to_string(x.tags,' '), x.sections::text,
                 (select string_agg(t.title, ' ') from public.team_tasks t where t.meeting_id = x.id))), q) > 0)
        order by x.meet_on desc, x.created_at desc
-       limit 300) s), '[]'::jsonb)
+       limit 300) s), '[]'::jsonb) end
   );
 end; $fn$;
 
@@ -211,7 +212,7 @@ begin
   if x.id is null then return false; end if;
   if not m.is_admin and coalesce(x.created_by, x.updated_by, '') <> m.name then
     raise exception 'Only an admin or the person who started this meeting can delete it.'; end if;
-  update public.team_tasks set meeting_id = null where meeting_id = p_id;
+  update public.team_tasks set meeting_id = null, meeting_on = null where meeting_id = p_id;
   delete from public.team_meetings where id = p_id;
   return true;
 end; $fn$;
