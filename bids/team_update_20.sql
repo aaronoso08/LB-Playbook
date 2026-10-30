@@ -1,0 +1,7 @@
+-- team_update_20: Photo wall and Job tips. Applied in Supabase on 2026-10-30.
+-- Photo wall: private storage bucket "team-photos" (3 MB per file, images only), up to 5 photos
+-- per post, team members can upload and view, people delete their own posts (admins any).
+-- Tables: team_photo_posts (caption, program, paths, share_ok, created_by).
+-- Functions: photos_list, photo_post_save, photo_post_delete.
+-- Job tips: tables team_tips, team_tip_votes. Functions: tips_list, tip_save, tip_vote, tip_delete.
+-- See the Supabase migration "team_update_20_photo_wall_and_tips" for the full SQL.
