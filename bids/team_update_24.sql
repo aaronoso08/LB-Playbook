@@ -1,4 +1,4 @@
--- team_update_24: Quarterly meeting planner. Not applied in Supabase yet (waiting for approval).
+-- team_update_24: Quarterly meeting planner. Applied in Supabase on 2026-10-30.
 -- Each quarterly member meeting gets: day-of role slots staff can claim (instead of reply-all email),
 -- a planning checklist with owners and due dates (assigned tasks also show on Team to-do), and a recap.
 -- A new meeting copies last quarter's slots and checklist, with due dates moved to the new date.
