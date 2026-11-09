@@ -2,6 +2,7 @@
 // Called every 10 minutes by Supabase (public.tracker_kick, one call per tracker) with the x-sync-token header.
 // Never writes to the Excel files. Never stores client names, addresses or phone numbers.
 // Needs Edge Function secrets: MS_CLIENT_ID, MS_CLIENT_SECRET (and optional MS_TENANT_ID, default latinobuilt.org).
+// Microsoft app Redirect URI (Web): https://uptrzajrneoarbchmbkp.supabase.co/functions/v1/tracker-sync/callback
 // SheetJS from npm (0.18.5). Only our own tracker files are read with it.
 import * as XLSX from "npm:xlsx@0.18.5";
 
@@ -21,18 +22,64 @@ async function db(path: string, init: RequestInit = {}) {
 const save = (key: string, row: Record<string, unknown>) =>
   db(`tracker_sources?key=eq.${encodeURIComponent(key)}`, { method: "PATCH", body: JSON.stringify({ ...row, synced_at: new Date().toISOString() }) });
 
-// ---------- Microsoft 365 ----------
-async function graphToken() {
-  const tenant = Deno.env.get("MS_TENANT_ID") || "latinobuilt.org";
+// ---------- Microsoft 365 (signs in as one staff member, read-only) ----------
+// A staff member connects once with the /login link. The function keeps that sign-in fresh and reads
+// the trackers with that person's own access. Scopes are read-only.
+const PUBLIC = "https://uptrzajrneoarbchmbkp.supabase.co/functions/v1/tracker-sync";
+const REDIRECT = `${PUBLIC}/callback`;
+const TENANT = () => Deno.env.get("MS_TENANT_ID") || "latinobuilt.org";
+const SCOPES = "offline_access openid profile User.Read Files.Read.All Sites.Read.All";
+const RECONNECT = "Microsoft sign-in expired or was removed. An admin can reconnect from the Program pulse board.";
+async function tokenCall(params: Record<string, string>) {
   const id = Deno.env.get("MS_CLIENT_ID"), secret = Deno.env.get("MS_CLIENT_SECRET");
   if (!id || !secret) throw new Error("Microsoft connection isn't set up yet (MS_CLIENT_ID / MS_CLIENT_SECRET).");
-  const r = await fetch(`https://login.microsoftonline.com/${encodeURIComponent(tenant)}/oauth2/v2.0/token`, {
-    method: "POST",
-    body: new URLSearchParams({ client_id: id, client_secret: secret, scope: "https://graph.microsoft.com/.default", grant_type: "client_credentials" }),
+  const r = await fetch(`https://login.microsoftonline.com/${encodeURIComponent(TENANT())}/oauth2/v2.0/token`, {
+    method: "POST", body: new URLSearchParams({ client_id: id, client_secret: secret, scope: SCOPES, ...params }),
   });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error("Microsoft sign-in failed: " + String(j.error_description || j.error || r.status).split(/\r?\n/)[0].slice(0, 220));
+  if (!r.ok) {
+    const d = String(j.error_description || j.error || r.status).split(/\r?\n/)[0].slice(0, 220);
+    throw new Error(j.error === "invalid_grant" ? RECONNECT : "Microsoft sign-in failed: " + d);
+  }
+  return j;
+}
+const keepTokens = (j: any) => db("tracker_config?id=eq.1", { method: "PATCH", body: JSON.stringify({
+  ms_access_token: j.access_token, ms_access_expires: new Date(Date.now() + (Number(j.expires_in || 3600) - 120) * 1000).toISOString(),
+  ...(j.refresh_token ? { ms_refresh_token: j.refresh_token } : {}) }) });
+async function graphToken() {
+  const c = (await db("tracker_config?id=eq.1&select=ms_refresh_token,ms_access_token,ms_access_expires"))?.[0] || {};
+  if (c.ms_access_token && c.ms_access_expires && Date.parse(c.ms_access_expires) > Date.now()) return c.ms_access_token as string;
+  if (!c.ms_refresh_token) throw new Error("Not connected to Microsoft yet. An admin needs to sign in once with the connect link.");
+  const j = await tokenCall({ grant_type: "refresh_token", refresh_token: c.ms_refresh_token });
+  await keepTokens(j);
   return j.access_token as string;
+}
+const text = (t: string, s = 200) => new Response(t, { status: s, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+async function loginStart(u: URL) {
+  const c = (await db("tracker_config?id=eq.1&select=login_code,login_until"))?.[0] || {};
+  const code = u.searchParams.get("c");
+  if (!code || code !== c.login_code || !c.login_until || Date.parse(c.login_until) < Date.now())
+    return text("This connect link expired or was already used. Ask for a new one.", 403);
+  const id = Deno.env.get("MS_CLIENT_ID");
+  if (!id) return text("The Microsoft app keys aren't in Supabase yet (MS_CLIENT_ID / MS_CLIENT_SECRET).", 500);
+  const q = new URLSearchParams({ client_id: id, response_type: "code", redirect_uri: REDIRECT, response_mode: "query", scope: SCOPES, state: code, prompt: "select_account" });
+  return new Response(null, { status: 302, headers: { Location: `https://login.microsoftonline.com/${encodeURIComponent(TENANT())}/oauth2/v2.0/authorize?${q}` } });
+}
+async function loginDone(u: URL) {
+  const err = u.searchParams.get("error");
+  if (err) return text(`Not connected. Microsoft said: ${(u.searchParams.get("error_description") || err).split(/\r?\n/)[0].slice(0, 300)}\n\nNothing was changed. You can close this tab.`, 400);
+  const c = (await db("tracker_config?id=eq.1&select=login_code,login_until"))?.[0] || {};
+  const state = u.searchParams.get("state"), code = u.searchParams.get("code");
+  if (!code || !state || state !== c.login_code || !c.login_until || Date.parse(c.login_until) < Date.now())
+    return text("This sign-in link expired or was already used. Ask for a new one.", 403);
+  const j = await tokenCall({ grant_type: "authorization_code", code, redirect_uri: REDIRECT });
+  const me = await fetch(`${G}/me?$select=mail,userPrincipalName`, { headers: { Authorization: `Bearer ${j.access_token}` } }).then((r) => r.json()).catch(() => ({}));
+  const who = String(me.mail || me.userPrincipalName || "").toLowerCase();
+  if (!who.endsWith("@latinobuilt.org")) return text("Please sign in with a Latino Built work account. Nothing was connected.", 403);
+  await keepTokens(j);
+  await db("tracker_config?id=eq.1", { method: "PATCH", body: JSON.stringify({ ms_account: who, ms_connected_at: new Date().toISOString(), login_code: null, login_until: null }) });
+  await db("rpc/tracker_kick", { method: "POST", body: "{}" }).catch((e) => console.error("kick", String(e)));
+  return text(`Connected as ${who}.\n\nThe Playbook will show live tracker numbers in about a minute. You can close this tab.`);
 }
 class GErr extends Error { constructor(m: string, public status: number) { super(m) } }
 async function g(tok: string, path: string) {
@@ -203,6 +250,8 @@ async function syncOne(tok: string, s: any, force: boolean) {
 
 Deno.serve(async (req) => {
   const u = new URL(req.url);
+  if (req.method === "GET" && u.pathname.endsWith("/login")) return loginStart(u);
+  if (req.method === "GET" && u.pathname.endsWith("/callback")) return loginDone(u);
   const cfg = await db("tracker_config?id=eq.1&select=sync_token");
   const given = req.headers.get("x-sync-token") || u.searchParams.get("k");
   if (!given || !cfg?.[0]?.sync_token || given !== cfg[0].sync_token) return json({ error: "not allowed" }, 403);
