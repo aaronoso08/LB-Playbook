@@ -7,7 +7,7 @@
 -- Note: if an older update file that redefines pulse_auto() is run again, run this file again after it.
 
 create extension if not exists pg_cron;
-create extension if not exists pg_net;
+create extension if not exists pg_net schema extensions;
 
 -- ---------- Which trackers to read ----------
 -- location:  user:<their work email>:/<folder>/<file>.xlsx         (a file in someone's OneDrive)
