@@ -4,513 +4,431 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Retrofit Helper</title>
-<meta name="description" content="A free, unofficial step-by-step helper for contractors and assessors working on home energy retrofit and healthy home repair programs. Guía paso a paso para contratistas.">
+<meta name="description" content="Unofficial step-by-step helper for contractors and assessors on home energy and healthy home repair programs. Guía paso a paso no oficial.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#053675;--orange:#F78D1B;--ink:#0F1B2D;--muted:#5B6678;--line:#E3E8F0;--bg:#F5F7FB;--surface:#fff;--soft:#EEF3FA;--ok:#137A43;--okbg:#E5F5EC;--bad:#B42318;--badbg:#FDECEA;--warnbg:#FFF4E5;--warn:#9A5B00;--accent-ink:#0B4A9E}
-@media (prefers-color-scheme:dark){:root{--ink:#E8EEF7;--muted:#9AA7BA;--line:#25324A;--bg:#0B1220;--surface:#111A2B;--soft:#16223A;--okbg:#0F2E1E;--ok:#5FD08F;--badbg:#3A1513;--bad:#FF8A80;--warnbg:#3A2A10;--warn:#FFC266;--accent-ink:#8DB8FF}}
+:root{--navy:#053675;--orange:#F78D1B;--ink:#0F1B2D;--muted:#5B6678;--line:#E3E8F0;--bg:#F5F7FB;--surface:#fff;--soft:#EEF3FA;--ok:#137A43;--okbg:#E5F5EC;--bad:#B42318;--badbg:#FDECEA;--warnbg:#FFF4E5;--warn:#8A5200;--accent-ink:#0B4A9E;--c1:#0B6E99;--c2:#7A4BC4;--c3:#1E8A5A}
+@media (prefers-color-scheme:dark){:root{--ink:#E8EEF7;--muted:#9AA7BA;--line:#25324A;--bg:#0B1220;--surface:#111A2B;--soft:#16223A;--okbg:#0F2E1E;--ok:#5FD08F;--badbg:#3A1513;--bad:#FF8A80;--warnbg:#3A2A10;--warn:#FFC266;--accent-ink:#8DB8FF;--c1:#4FB6E3;--c2:#B59AF0;--c3:#5FD08F}}
 *{box-sizing:border-box}[hidden]{display:none!important}
 body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
 a{color:var(--accent-ink)}
-header{background:var(--navy);color:#fff}
-.hwrap{max-width:980px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;gap:12px}
-.hwrap img{width:40px;height:40px;border-radius:8px}
-.brand b{font-size:19px;letter-spacing:-.01em}.brand b span{color:var(--orange)}.brand small{display:block;font-size:12.5px;opacity:.8}
+header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:5}
+.hwrap{max-width:960px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.hwrap b{font-size:18px}
 .lang{margin-left:auto;display:flex;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
 .lang button{border:0;background:none;color:#fff;font:600 13px Inter,sans-serif;padding:6px 12px;border-radius:999px;cursor:pointer}
 .lang button[aria-pressed="true"]{background:#fff;color:var(--navy)}
-main{max-width:980px;margin:0 auto;padding:24px 16px 60px}
-h1{font-size:clamp(26px,5vw,36px);letter-spacing:-.02em;margin:0 0 6px;line-height:1.15}
+main{max-width:960px;margin:0 auto;padding:22px 16px 60px}
+h1{font-size:clamp(26px,5vw,34px);letter-spacing:-.02em;margin:0 0 4px;line-height:1.15}
 h2{font-size:20px;margin:0 0 10px;letter-spacing:-.01em}
-h3{font-size:16px;margin:16px 0 6px}
-.lede{color:var(--muted);margin:0 0 16px;max-width:680px}
-.note{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:10px 14px;font-size:14px;margin:0 0 20px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:14px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
-.tabs button{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 14.5px Inter,sans-serif;padding:10px 16px;border-radius:12px;cursor:pointer;text-align:left}
-.tabs button small{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
-.tabs button[aria-selected="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);background:var(--soft)}
-.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.step{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--surface)}
-.step summary{cursor:pointer;display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;list-style:none}
-.step summary::-webkit-details-marker{display:none}
-.num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:13px}
-.prog{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--muted);white-space:nowrap}
-.prog.done{color:var(--ok)}
-.who{font-size:13px;color:var(--muted);margin:6px 0 4px 38px}
-.checks{list-style:none;margin:8px 0 0 38px;padding:0;display:grid;gap:6px}
-.checks label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:15px}
-.checks input{width:18px;height:18px;margin-top:3px;accent-color:var(--navy);flex:none}
-.warnline{margin:8px 0 0 38px;font-size:14px;background:var(--badbg);color:var(--bad);border-radius:10px;padding:8px 12px}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--navy);background:var(--navy);color:#fff;font:700 14.5px Inter,sans-serif;padding:10px 16px;border-radius:12px;cursor:pointer;text-decoration:none}
+h3{font-size:13px;margin:14px 0 6px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+p{margin:0 0 10px}
+.lede{color:var(--muted);margin:0 0 14px;max-width:680px}
+.note{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:9px 14px;font-size:13.5px;margin:0 0 18px}
+.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:780px){.pick{grid-template-columns:1fr}}
+.prog{border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:14px 16px;text-align:left;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;gap:6px}
+.prog .ic{font-size:22px;line-height:1}
+.prog b{font-size:17px}
+.prog ul{margin:0;padding-left:18px;color:var(--muted);font-size:13.5px}
+.prog[aria-pressed="true"]{border-color:var(--pc);box-shadow:0 0 0 3px color-mix(in srgb,var(--pc) 18%,transparent)}
+.prog .go{margin-top:auto;font-weight:700;font-size:13.5px;color:var(--pc)}
+.diff{border-left:5px solid var(--pc);background:var(--soft);border-radius:12px;padding:12px 16px;margin-bottom:14px}
+.diff b{display:block;margin-bottom:4px}
+.diff ul{margin:0;padding-left:18px}
+.diff li{margin:3px 0}
+.role{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;font-weight:700;font-size:14px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px Inter,sans-serif;padding:8px 14px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.rail{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;scrollbar-width:thin}
+.rail button{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 13px Inter,sans-serif;padding:8px 12px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.rail button .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--soft);font-size:12px;font-weight:800}
+.rail button.done .n{background:var(--ok);color:#fff}
+.rail button[aria-current="step"]{border-color:var(--pc);box-shadow:inset 0 0 0 1px var(--pc)}
+.rail button[aria-current="step"] .n{background:var(--pc);color:#fff}
+.stage{border:2px solid var(--pc);border-radius:18px;padding:18px 20px;background:var(--surface);margin-bottom:14px;scroll-margin-top:70px}
+.stage .top{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.stage .top .n{width:34px;height:34px;border-radius:50%;background:var(--pc);color:#fff;display:grid;place-items:center;font-weight:800;flex:none}
+.stage .top h2{margin:0;font-size:22px}
+.whobar{color:var(--muted);font-size:14px;margin:2px 0 8px}
+.plain{font-size:16px;margin:6px 0 12px}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.checks label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:15.5px}
+.checks input{width:20px;height:20px;margin-top:2px;accent-color:var(--navy);flex:none}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:6px;margin-right:6px;vertical-align:1px}
+.tag.a{background:color-mix(in srgb,var(--c1) 15%,transparent);color:var(--c1)}
+.tag.c{background:color-mix(in srgb,var(--orange) 20%,transparent);color:var(--warn)}
+.tag.o{background:var(--soft);color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:700px){.two{grid-template-columns:1fr}}
+.box{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:14.5px}
+.box b{display:block;margin-bottom:4px;font-size:14px}
+.box ul{margin:0;padding-left:18px}
+.warnbox{margin-top:12px;background:var(--badbg);color:var(--bad);border-radius:12px;padding:10px 14px;font-weight:600;font-size:14.5px}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--navy);background:var(--navy);color:#fff;font:700 15px Inter,sans-serif;padding:11px 18px;border-radius:12px;cursor:pointer;text-decoration:none}
 .btn.ghost{background:transparent;color:var(--accent-ink);border-color:var(--line)}
-.btn.or{background:var(--orange);border-color:var(--orange);color:#1b1200}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:760px){.grid2{grid-template-columns:1fr}.who,.checks,.warnline{margin-left:0}}
-label.f{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700}
-input[type=number],select{font:500 15px Inter,sans-serif;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
-input:focus,select:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
-.result{margin-top:12px;border-radius:12px;padding:12px 14px;font-weight:600;font-size:15px;background:var(--soft)}
+.btn:disabled{opacity:.4;cursor:default}
+.tool{margin-top:14px;border:1px dashed var(--line);border-radius:14px;padding:14px}
+.tool h4{margin:0 0 8px;font-size:15px}
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:700px){.fields{grid-template-columns:1fr}}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700}
+input[type=number]{font:500 15px Inter,sans-serif;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+input:focus,button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+.result{margin-top:10px;border-radius:12px;padding:10px 14px;font-weight:600;font-size:14.5px;background:var(--soft)}
 .result.ok{background:var(--okbg);color:var(--ok)}.result.bad{background:var(--badbg);color:var(--bad)}.result.warn{background:var(--warnbg);color:var(--warn)}
-.spec{margin:10px 0 0;padding-left:20px}.spec li{margin:4px 0}
-.gate{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;border-radius:12px;padding:12px 14px;margin-top:12px}
-.links{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+details.more{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 20px;margin-bottom:14px}
+details.more summary{cursor:pointer;font-weight:800;font-size:17px}
+.links{display:grid;gap:8px;margin:12px 0 0;padding:0;list-style:none}
 .links a{display:block;padding:10px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;font-weight:600}
 .links a small{display:block;font-weight:500;color:var(--muted)}
-footer{max-width:980px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:13px}
-@media print{header .lang,.tabs,.btn{display:none}.step{break-inside:avoid}}
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:12px}
+.fact{background:var(--soft);border-radius:12px;padding:10px 12px}
+.fact span{display:block;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.fact b{font-size:15px}
+.tbl{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}
+.tbl th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tbl td:first-child{font-weight:700;width:22%}
+@media(max-width:700px){.tbl thead{display:none}.tbl tr{display:block;border-bottom:1px solid var(--line);padding:8px 0}.tbl td{display:block;border:0;padding:3px 0;width:auto!important}.tbl td[data-h]::before{content:attr(data-h)": ";font-weight:700;color:var(--muted)}}
+.empty{color:var(--muted);text-align:center;padding:26px 10px;border:2px dashed var(--line);border-radius:16px}
+footer{max-width:960px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:13px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+footer .btn{font-size:13px;padding:7px 12px}
+@media print{header,.pick,.role,.rail,.nav,footer .btn{display:none}details.more{display:block}}
 </style>
 </head>
 <body>
-<header>
-  <div class="hwrap">
-    <div class="brand"><b data-t="tag">Retrofit Helper</b></div>
-    <div class="lang" role="group" aria-label="Language / Idioma">
-      <button type="button" data-lang="en" aria-pressed="true">EN</button>
-      <button type="button" data-lang="es" aria-pressed="false">ES</button>
-    </div>
-  </div>
-</header>
+<header><div class="hwrap"><b data-t="title"></b>
+  <div class="lang" role="group" aria-label="Language / Idioma"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="es" aria-pressed="false">ES</button></div>
+</div></header>
 
 <main>
-  <h1 data-t="h1">Retrofit Helper</h1>
-  <p class="lede" data-t="lede">A step-by-step guide for contractors and assessors working on home energy upgrades and healthy home repairs. Pick your program, follow the steps, and check things off as you go.</p>
-  <p class="note" data-t="disclaimer">Unofficial helper. It is not from any program or agency. Rules change, so always follow the program's current official guidelines and your coordinator's instructions.</p>
+  <h1 data-t="title"></h1>
+  <p class="lede" data-t="lede"></p>
+  <p class="note" data-t="disclaimer"></p>
 
-  <div class="tabs" role="tablist" aria-label="Programs">
-    <button role="tab" type="button" data-tab="city" aria-selected="true"><span data-t="tabCity">City energy grant</span><small data-t="tabCitySub">Portland whole-home retrofits</small></button>
-    <button role="tab" type="button" data-tab="util" aria-selected="false"><span data-t="tabUtil">Utility incentives</span><small data-t="tabUtilSub">Heat pumps, insulation, water heaters</small></button>
-    <button role="tab" type="button" data-tab="hh" aria-selected="false"><span data-t="tabHH">Healthy home repairs</span><small data-t="tabHHSub">Safety, moisture, weatherization</small></button>
-  </div>
+  <h2 data-t="pickH"></h2>
+  <div class="pick" id="pick"></div>
+  <p style="margin:-6px 0 18px"><a href="#cmp" id="cmpLink" data-t="cmpLink"></a></p>
 
-  <!-- ============ CITY ENERGY GRANT ============ -->
-  <section data-panel="city">
-    <div class="card">
-      <h2 data-t="cityH">How a city energy grant job usually goes</h2>
-      <p class="lede" data-t="cityLede">For whole-home energy retrofits funded through a City of Portland clean energy grant. Steps open and close; your checkmarks save on this device.</p>
-      <ol class="steps" id="steps-city"></ol>
-    </div>
+  <div id="view"></div>
 
-    <div class="grid2">
-      <div class="card">
-        <h2 data-t="inPdxH">Is the home inside Portland?</h2>
-        <p data-t="inPdxP">Many "Portland" mailing addresses are really Gresham, Milwaukie, Fairview or unincorporated county. Look the address up and check that Jurisdiction says <b>Portland</b>.</p>
-        <a class="btn" href="https://www.portlandmaps.com" target="_blank" rel="noopener" data-t="inPdxBtn">Open Portland Maps</a>
-      </div>
-      <div class="card">
-        <h2 data-t="scopeH">Scope check</h2>
-        <div class="grid2">
-          <label class="f"><span data-t="savings">Modeled energy savings (%)</span><input type="number" id="sv" min="0" max="100" step="0.1" inputmode="decimal"></label>
-          <label class="f"><span data-t="repairs">Repair / non-energy cost ($)</span><input type="number" id="rp" min="0" step="1" inputmode="decimal"></label>
-          <label class="f"><span data-t="energy">Energy work cost ($)</span><input type="number" id="en" min="0" step="1" inputmode="decimal"></label>
-        </div>
-        <div class="result" id="scopeOut" data-t="scopeEmpty">Enter the numbers from your model and estimate.</div>
-      </div>
-    </div>
+  <details class="more" id="cmp">
+    <summary data-t="cmpH"></summary>
+    <table class="tbl" id="cmpTbl"></table>
+  </details>
 
-    <div class="card">
-      <h2 data-t="measH">Measure lookup</h2>
-      <p class="lede" data-t="measP">Pick a measure to see the usual minimums. Based on public city guidance (single-unit retrofits, v3, March 2026).</p>
-      <select id="measure" aria-label="Measure"></select>
-      <ul class="spec" id="measureOut"></ul>
-    </div>
-
-    <div class="card">
-      <h2 data-t="gateH">Before you install</h2>
-      <p class="lede" data-t="gateP">Every box has to be checked before any work starts.</p>
-      <ul class="checks" id="gate-city" style="margin-left:0"></ul>
-      <div class="gate" id="gateOut"></div>
-    </div>
-
-    <div class="card">
-      <h2 data-t="linksH">Official documents and tools</h2>
-      <ul class="links">
-        <li><a href="https://www.portland.gov/bps/cleanenergy/documents/pcef-eligible-measures-eere-home-retrofit/download" target="_blank" rel="noopener"><span data-t="l1">Eligible measures, home retrofits</span><small>City of Portland (PCEF)</small></a></li>
-        <li><a href="https://www.portland.gov/bps/cleanenergy/documents/pcef-eere-compiled-checklists-2026/download" target="_blank" rel="noopener"><span data-t="l2">Installation checklists 2026</span><small>City of Portland (PCEF)</small></a></li>
-        <li><a href="https://www.portland.gov/bps/cleanenergy/energy-efficiency-and-renewable-energy" target="_blank" rel="noopener"><span data-t="l3">Energy efficiency resources page</span><small>City of Portland</small></a></li>
-        <li><a href="https://hvac.betterbuiltnw.com/" target="_blank" rel="noopener"><span data-t="l4">HVAC load calculator</span><small>BetterBuiltNW</small></a></li>
-        <li><a href="https://snuggpro.com/webinars/training" target="_blank" rel="noopener"><span data-t="l5">Snugg Pro training (BPI CEUs)</span><small>Snugg Pro</small></a></li>
-        <li><a href="https://www.portland.gov/bps/cleanenergy/workforce-and-contractor-training/workforce-and-contractor-training-videos" target="_blank" rel="noopener"><span data-t="l6">Safe and respectful jobsite training videos</span><small>City of Portland</small></a></li>
-              <li><a href="https://www.portland.gov/bps/cleanenergy/pcef-resources/grantee-onboarding" target="_blank" rel="noopener"><span data-t="c7"></span><small>City of Portland</small></a></li>
-        <li><a href="https://www.portland.gov/bps/cleanenergy/pcef-resources/glossary-terms" target="_blank" rel="noopener"><span data-t="c8"></span><small>City of Portland</small></a></li>
-        <li><a href="https://www.portland.gov/bps/cleanenergy/mini-grants" target="_blank" rel="noopener"><span data-t="c9"></span><small>City of Portland</small></a></li>
-        <li><a href="https://neea.org/resources/residential-hpwh-qualified-products-list" target="_blank" rel="noopener"><span data-t="c10"></span><small>NEEA</small></a></li>
-        <li><a href="https://www.energystar.gov/productfinder/" target="_blank" rel="noopener"><span data-t="c11"></span><small>ENERGY STAR</small></a></li>
-        <li><a href="https://www.oregon.gov/deq/FilterDocs/asb-SurveyFS.pdf" target="_blank" rel="noopener"><span data-t="c12"></span><small>Oregon DEQ</small></a></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ============ UTILITY INCENTIVES ============ -->
-  <section data-panel="util" hidden>
-    <div class="card">
-      <h2 data-t="utilH">How a utility incentive job usually goes</h2>
-      <p class="lede" data-t="utilLede">For no-cost or reduced-cost upgrades paid through a utility efficiency program and a community partner. Exact forms, amounts and deadlines change, so check the program's current rules.</p>
-      <ol class="steps" id="steps-util"></ol>
-    </div>
-    <div class="card">
-      <h2 data-t="packH">Completion paperwork check</h2>
-      <p class="lede" data-t="packP">Most rejections come from paperwork that doesn't match. Check all of these before you submit.</p>
-      <ul class="checks" id="gate-util" style="margin-left:0"></ul>
-      <div class="gate" id="gateOutUtil"></div>
-    </div>
-    <div class="card">
-      <h2 data-t="linksH">Official documents and tools</h2>
-      <ul class="links">
-        <li><a href="https://www.energytrust.org/" target="_blank" rel="noopener"><span data-t="u1">Program website and current incentives</span><small>Energy Trust of Oregon</small></a></li>
-        <li><a href="https://www.ahridirectory.org/" target="_blank" rel="noopener"><span data-t="u2">AHRI certificate lookup</span><small>AHRI Directory</small></a></li>
-        <li><a href="https://hvac.betterbuiltnw.com/" target="_blank" rel="noopener"><span data-t="l4">HVAC load calculator</span><small>BetterBuiltNW</small></a></li>
-        <li><a href="https://www.energytrust.org/wp-content/uploads/2020/08/Specifications-Manual_Spanish.pdf" target="_blank" rel="noopener"><span data-t="u3">Weatherization specifications manual (Spanish)</span><small>Energy Trust of Oregon</small></a></li>
-              <li><a href="https://www.energytrust.org/about/explore-energy-trust/about-partner-allies/" target="_blank" rel="noopener"><span data-t="u4"></span><small>Energy Trust of Oregon</small></a></li>
-        <li><a href="https://insider.energytrust.org/?p=21145" target="_blank" rel="noopener"><span data-t="u5"></span><small>Energy Trust of Oregon</small></a></li>
-        <li><a href="https://www.homeenergyrebates.oregon.gov/contractor-center" target="_blank" rel="noopener"><span data-t="u6"></span><small>Oregon Department of Energy</small></a></li>
-        <li><a href="https://www.oregon.gov/energy/Incentives/Pages/Home-Energy-Rebates.aspx" target="_blank" rel="noopener"><span data-t="u7"></span><small>Oregon Department of Energy</small></a></li>
-        <li><a href="https://www.oregon.gov/ohcs/energy-weatherization/Pages/weatherization-services.aspx" target="_blank" rel="noopener"><span data-t="u8"></span><small>Oregon Housing and Community Services</small></a></li>
-        <li><a href="https://neea.org/resources/residential-hpwh-qualified-products-list" target="_blank" rel="noopener"><span data-t="c10"></span><small>NEEA</small></a></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ============ HEALTHY HOME REPAIRS ============ -->
-  <section data-panel="hh" hidden>
-    <div class="card">
-      <h2 data-t="hhH">How a healthy home repair job usually goes</h2>
-      <p class="lede" data-t="hhLede">For repair grants that fix health and safety problems first, then weatherize. Work is usually priced by category and approved before it starts.</p>
-      <ol class="steps" id="steps-hh"></ol>
-    </div>
-
-    <div class="card">
-      <h2 data-t="princH">What the assessment looks at</h2>
-      <p class="lede" data-t="princP">Findings are written as Problem, Cause, Health/Safety Impact, Solution, with photos.</p>
-      <ul class="spec" id="princOut"></ul>
-    </div>
-
-    <div class="card">
-      <h2 data-t="budH">Budget check</h2>
-      <p class="lede" data-t="budP">Common category limits from the program's public guidance. Your coordinator has the final numbers for each home.</p>
-      <div class="grid2">
-        <label class="f"><span data-t="bAcc">Accessibility ($, usually up to $2,000)</span><input type="number" id="bA" min="0" step="1" inputmode="decimal"></label>
-        <label class="f"><span data-t="bPre">Pre-weatherization / repairs ($, usually up to $15,000)</span><input type="number" id="bP" min="0" step="1" inputmode="decimal"></label>
-        <label class="f"><span data-t="bWx">Weatherization ($, usually up to $5,000)</span><input type="number" id="bW" min="0" step="1" inputmode="decimal"></label>
-      </div>
-      <div class="result" id="budOut" data-t="budEmpty">Enter your bid totals by category.</div>
-    </div>
-
-    <div class="card">
-      <h2 data-t="linksH">Official documents and tools</h2>
-      <ul class="links">
-        <li><a href="https://earthadvantage.org/climate-justice/hhgp-resources.html" target="_blank" rel="noopener"><span data-t="h1l">Program resources: eligible activities, photo and invoice guidance</span><small>Earth Advantage (Healthy Homes)</small></a></li>
-        <li><a href="https://www.epa.gov/lead/lead-renovation-repair-and-painting-program" target="_blank" rel="noopener"><span data-t="h2l">Lead-safe work (RRP) rules</span><small>U.S. EPA</small></a></li>
-        <li><a href="https://www.oregon.gov/deq/asbestos/pages/default.aspx" target="_blank" rel="noopener"><span data-t="h3l">Asbestos rules for homes</span><small>Oregon DEQ</small></a></li>
-              <li><a href="https://www.oregon.gov/oha/PH/HEALTHYENVIRONMENTS/HEALTHYNEIGHBORHOODS/HEALTHYHOMESGRANTPROGRAM/Pages/More-Information.aspx" target="_blank" rel="noopener"><span data-t="h4l"></span><small>Oregon Health Authority</small></a></li>
-        <li><a href="https://www.epa.gov/lead/renovation-repair-and-painting-program-contractors" target="_blank" rel="noopener"><span data-t="h5l"></span><small>U.S. EPA</small></a></li>
-        <li><a href="https://www.oregon.gov/deq/FilterDocs/asb-SurveyFS.pdf" target="_blank" rel="noopener"><span data-t="c12"></span><small>Oregon DEQ</small></a></li>
-      </ul>
-    </div>
-  </section>
-
-  <div class="card">
-    <h2 data-t="genH">For any contractor</h2>
-    <ul class="links">
-        <li><a href="https://www.oregon.gov/ccb/" target="_blank" rel="noopener"><span data-t="g1"></span><small>Oregon Construction Contractors Board</small></a></li>
-        <li><a href="https://www.epa.gov/lead/renovation-repair-and-painting-program-contractors" target="_blank" rel="noopener"><span data-t="g2"></span><small>U.S. EPA</small></a></li>
-        <li><a href="https://osha.oregon.gov/" target="_blank" rel="noopener"><span data-t="g3"></span><small>Oregon OSHA</small></a></li>
-        <li><a href="https://www.bpi.org/" target="_blank" rel="noopener"><span data-t="g4"></span><small>Building Performance Institute</small></a></li>
-        <li><a href="https://www.ahridirectory.org/" target="_blank" rel="noopener"><span data-t="g5"></span><small>AHRI Directory</small></a></li>
-        <li><a href="https://hvac.betterbuiltnw.com/" target="_blank" rel="noopener"><span data-t="l4"></span><small>BetterBuiltNW</small></a></li>
-    </ul>
-  </div>
-  <div class="card">
-    <div class="row">
-      <button class="btn ghost" type="button" id="reset" data-t="reset">Clear my checkmarks</button>
-      <button class="btn ghost" type="button" onclick="window.print()" data-t="print">Print this page</button>
-    </div>
-  </div>
+  <details class="more" id="anyc">
+    <summary data-t="anyH"></summary>
+    <ul class="links" id="anyLinks"></ul>
+  </details>
 </main>
-<footer data-t="foot">Unofficial guide. Program names and documents belong to their owners. Checkmarks are saved only in this browser.</footer>
+<footer><span data-t="foot"></span><button class="btn ghost" type="button" id="reset" data-t="reset"></button><button class="btn ghost" type="button" id="printBtn" data-t="print"></button></footer>
 
 <script>
 (function(){
 "use strict";
-var T={
- tag:["Retrofit Helper","Guía de Retrofit"],
- h1:["Retrofit Helper","Guía de Retrofit"],
- lede:["A step-by-step guide for contractors and assessors working on home energy upgrades and healthy home repairs. Pick your program, follow the steps, and check things off as you go.","Una guía paso a paso para contratistas y evaluadores que trabajan en mejoras de energía y reparaciones para hogares saludables. Escoja su programa, siga los pasos y marque cada cosa al terminar."],
- disclaimer:["Unofficial helper. It is not from any program or agency. Rules change, so always follow the program's current official guidelines and your coordinator's instructions.","Guía no oficial. No viene de ningún programa ni agencia. Las reglas cambian, así que siempre siga las guías oficiales actuales del programa y las instrucciones de su coordinador."],
- tabCity:["City energy grant","Subsidio de energía de la ciudad"],tabCitySub:["Portland whole-home retrofits","Retrofits de casa completa en Portland"],
- tabUtil:["Utility incentives","Incentivos de la compañía de servicios"],tabUtilSub:["Heat pumps, insulation, water heaters","Bombas de calor, aislamiento, calentadores"],
- tabHH:["Healthy home repairs","Reparaciones para hogares saludables"],tabHHSub:["Safety, moisture, weatherization","Seguridad, humedad, climatización"],
- cityH:["How a city energy grant job usually goes","Cómo funciona un trabajo del subsidio de la ciudad"],
- cityLede:["For whole-home energy retrofits funded through a City of Portland clean energy grant. Steps open and close; your checkmarks save on this device.","Para retrofits de energía de casa completa pagados por un subsidio de energía limpia de la Ciudad de Portland. Los pasos se abren y cierran; sus marcas se guardan en este dispositivo."],
- inPdxH:["Is the home inside Portland?","¿La casa está dentro de Portland?"],
- inPdxP:["Many \"Portland\" mailing addresses are really Gresham, Milwaukie, Fairview or unincorporated county. Look the address up and check that Jurisdiction says <b>Portland</b>.","Muchas direcciones de \"Portland\" en realidad son de Gresham, Milwaukie, Fairview o del condado. Busque la dirección y revise que Jurisdiction diga <b>Portland</b>."],
- inPdxBtn:["Open Portland Maps","Abrir Portland Maps"],
- scopeH:["Scope check","Revisión del alcance"],
- savings:["Modeled energy savings (%)","Ahorro de energía modelado (%)"],
- repairs:["Repair / non-energy cost ($)","Costo de reparaciones / no energía ($)"],
- energy:["Energy work cost ($)","Costo del trabajo de energía ($)"],
- scopeEmpty:["Enter the numbers from your model and estimate.","Escriba los números de su modelo y su estimado."],
- measH:["Measure lookup","Buscar una medida"],
- measP:["Pick a measure to see the usual minimums. Based on public city guidance (single-unit retrofits, v3, March 2026).","Escoja una medida para ver los mínimos usuales. Basado en la guía pública de la ciudad (retrofits de una unidad, v3, marzo 2026)."],
- gateH:["Before you install","Antes de instalar"],
- gateP:["Every box has to be checked before any work starts.","Todas las casillas tienen que estar marcadas antes de empezar cualquier trabajo."],
- linksH:["Official documents and tools","Documentos oficiales y herramientas"],
- l1:["Eligible measures, home retrofits","Medidas elegibles, retrofits de casas"],l2:["Installation checklists 2026","Listas de instalación 2026"],l3:["Energy efficiency resources page","Página de recursos de eficiencia"],l4:["HVAC load calculator","Calculadora de carga HVAC"],l5:["Snugg Pro training (BPI CEUs)","Capacitación de Snugg Pro (CEUs de BPI)"],l6:["Safe and respectful jobsite training videos","Videos de capacitación para un lugar de trabajo seguro y respetuoso"],
- utilH:["How a utility incentive job usually goes","Cómo funciona un trabajo con incentivos de la compañía"],
- utilLede:["For no-cost or reduced-cost upgrades paid through a utility efficiency program and a community partner. Exact forms, amounts and deadlines change, so check the program's current rules.","Para mejoras sin costo o a bajo costo pagadas por un programa de eficiencia y una organización comunitaria. Los formularios, montos y plazos cambian, así que revise las reglas actuales del programa."],
- packH:["Completion paperwork check","Revisión de documentos finales"],
- packP:["Most rejections come from paperwork that doesn't match. Check all of these before you submit.","La mayoría de los rechazos son por documentos que no coinciden. Revise todo esto antes de entregar."],
- u1:["Program website and current incentives","Sitio del programa e incentivos actuales"],u2:["AHRI certificate lookup","Buscar certificado AHRI"],u3:["Weatherization specifications manual (Spanish)","Manual de especificaciones de climatización (español)"],
- hhH:["How a healthy home repair job usually goes","Cómo funciona un trabajo de reparación para hogar saludable"],
- hhLede:["For repair grants that fix health and safety problems first, then weatherize. Work is usually priced by category and approved before it starts.","Para subsidios de reparación que arreglan primero los problemas de salud y seguridad y luego climatizan. El trabajo se cotiza por categoría y se aprueba antes de empezar."],
- princH:["What the assessment looks at","Qué revisa la evaluación"],
- princP:["Findings are written as Problem, Cause, Health/Safety Impact, Solution, with photos.","Los hallazgos se escriben como Problema, Causa, Impacto en la salud/seguridad, Solución, con fotos."],
- budH:["Budget check","Revisión del presupuesto"],
- budP:["Common category limits from the program's public guidance. Your coordinator has the final numbers for each home.","Límites comunes por categoría según la guía pública del programa. Su coordinador tiene los números finales de cada casa."],
- bAcc:["Accessibility ($, usually up to $2,000)","Accesibilidad ($, normalmente hasta $2,000)"],
- bPre:["Pre-weatherization / repairs ($, usually up to $15,000)","Pre-climatización / reparaciones ($, normalmente hasta $15,000)"],
- bWx:["Weatherization ($, usually up to $5,000)","Climatización ($, normalmente hasta $5,000)"],
- budEmpty:["Enter your bid totals by category.","Escriba los totales de su cotización por categoría."],
- h1l:["Program resources: eligible activities, photo and invoice guidance","Recursos del programa: actividades elegibles, guía de fotos y facturas"],
- h2l:["Lead-safe work (RRP) rules","Reglas de trabajo seguro con plomo (RRP)"],
- h3l:["Asbestos rules for homes","Reglas de asbesto para casas"],
- c7:["Grantee onboarding: what grant-funded projects need","Incorporación de beneficiarios: lo que necesitan los proyectos"],
- c8:["Glossary of program terms","Glosario de términos del programa"],
- c9:["Mini grants for community projects","Mini subsidios para proyectos comunitarios"],
- c10:["Qualified heat pump water heater list","Lista de calentadores de agua con bomba de calor calificados"],
- c11:["ENERGY STAR product finder (windows, fans, appliances)","Buscador de productos ENERGY STAR (ventanas, extractores, aparatos)"],
- c12:["Asbestos survey requirements","Requisitos de inspección de asbesto"],
- u4:["Become a trade ally contractor","Hágase contratista trade ally"],
- u5:["Trade ally resources, training calendar and forms","Recursos, calendario de capacitación y formularios para trade allies"],
- u6:["State home energy rebates: contractor center (enrollment and training)","Reembolsos estatales de energía: centro de contratistas (inscripción y capacitación)"],
- u7:["State home energy rebate programs overview","Resumen de los programas estatales de reembolsos"],
- u8:["Low-income weatherization services","Servicios de climatización para bajos ingresos"],
- h4l:["State healthy homes grant program: who it funds","Programa estatal de hogares saludables: a quién financia"],
- h5l:["Lead-safe certification for renovation firms","Certificación de trabajo seguro con plomo para empresas"],
- genH:["For any contractor","Para cualquier contratista"],
- g1:["Check or renew a CCB license","Revisar o renovar una licencia CCB"],
- g2:["Lead-safe (RRP) firm and renovator certification","Certificación RRP para empresas y renovadores"],
- g3:["Workplace safety rules and training","Reglas y capacitación de seguridad en el trabajo"],
- g4:["BPI certifications and CEUs","Certificaciones y CEUs de BPI"],
- g5:["AHRI certificate lookup","Buscar certificado AHRI"],
- reset:["Clear my checkmarks","Borrar mis marcas"],print:["Print this page","Imprimir esta página"],
- foot:["Unofficial guide. Program names and documents belong to their owners. Checkmarks are saved only in this browser.","Guía no oficial. Los nombres y documentos de los programas pertenecen a sus dueños. Las marcas se guardan solo en este navegador."]
-};
-
-/* Steps: [title, who, [checks], warning] each as [en, es] */
-var STEPS={
- city:[
-  {t:["Check the home qualifies","Revisar que la casa califique"],w:["Coordinator / assessor","Coordinador / evaluador"],c:[
-   ["Address is inside City of Portland (Portland Maps)","La dirección está dentro de la Ciudad de Portland (Portland Maps)"],
-   ["Owner name on the county record matches the homeowner (mobile home: they have the title)","El nombre del dueño en el condado coincide con el cliente (casa móvil: tiene el título)"],
-   ["Homeowner agreed to the assessment","El dueño aceptó la evaluación"]]},
-  {t:["Test-in assessment","Evaluación inicial (test-in)"],w:["BPI Building Analyst Professional","BPI Building Analyst Professional"],c:[
-   ["Blower door test (pre)","Prueba de blower door (antes)"],
-   ["Duct leakage, air handler flow and static pressure (if ducted)","Fugas de ductos, flujo y presión estática (si tiene ductos)"],
-   ["Combustion safety testing","Pruebas de seguridad de combustión"],
-   ["Radon test started, when possible","Prueba de radón, cuando sea posible"],
-   ["Photos of existing conditions","Fotos de las condiciones actuales"],
-   ["Home details: year built, floors, bedrooms, foundation, sq ft, ceiling height","Datos de la casa: año, pisos, recámaras, cimiento, pies cuadrados, altura del techo"]]},
-  {t:["Model the scope","Modelar el alcance"],w:["Assessor + contractor","Evaluador + contratista"],c:[
-   ["Job built in Snugg Pro under the city grant program","Trabajo creado en Snugg Pro bajo el programa de la ciudad"],
-   ["Scope models at least 10% energy savings","El alcance modela al menos 10% de ahorro"],
-   ["Whole-home air sealing included (multi-measure jobs)","Sellado de aire de toda la casa incluido (varias medidas)"],
-   ["Biggest bill-savings measures come first","Primero las medidas que más ahorran en la factura"],
-   ["Heat pumps: load calc done for the house after weatherization","Bombas de calor: cálculo de carga para la casa ya climatizada"],
-   ["Estimate matches the Snugg Pro measures line for line","El estimado coincide con las medidas de Snugg Pro línea por línea"],
-   ["Equipment specs: make, model, capacity, efficiency, AHRI #","Especificaciones: marca, modelo, capacidad, eficiencia, # AHRI"],
-   ["Price agreed in writing (email is fine)","Precio acordado por escrito (correo está bien)"]]},
-  {t:["QA review and homeowner approval","Revisión de QA y aprobación del dueño"],w:["Coordinator > QA provider > homeowner","Coordinador > QA > dueño"],c:[
-   ["Project registered with the QA provider with all documents","Proyecto registrado con QA con todos los documentos"],
-   ["QA approved the scope in writing (usually about 5 business days)","QA aprobó el alcance por escrito (normalmente unos 5 días hábiles)"],
-   ["Homeowner reviewed the approved scope and signed","El dueño revisó el alcance aprobado y firmó"]],x:["No install before written QA approval and the homeowner's signature.","No se instala nada antes de la aprobación de QA por escrito y la firma del dueño."]},
-  {t:["Install","Instalación"],w:["Contractor","Contratista"],c:[
-   ["Only the approved scope, following the installation checklists","Solo el alcance aprobado, siguiendo las listas de instalación"],
-   ["Any change sent to QA and approved before it's installed","Cualquier cambio se manda a QA y se aprueba antes de instalarlo"],
-   ["Lead-safe practices on pre-1978 homes; stop and report suspected asbestos","Prácticas seguras con plomo en casas antes de 1978; parar y reportar posible asbesto"],
-   ["Photos, permits and checklists saved","Fotos, permisos y listas guardadas"],
-   ["Homeowner was not charged anything","No se le cobró nada al dueño"]]},
-  {t:["Test-out and final QA","Prueba final y QA final"],w:["Contractor > assessor > QA provider","Contratista > evaluador > QA"],c:[
-   ["Post-install data entered in Snugg Pro","Datos después de instalar en Snugg Pro"],
-   ["Blower door (post), duct test if needed, radon test at project end","Blower door (después), prueba de ductos si aplica, radón al final"],
-   ["Final QA visit requested (send changes + final invoice)","Visita final de QA pedida (mandar cambios + factura final)"],
-   ["Corrections finished within 30 days of the QA report","Correcciones terminadas en 30 días después del reporte de QA"],
-   ["Warranty papers, manuals and homeowner instructions left at the home","Garantías, manuales e instrucciones dejados con el dueño"]]}
- ],
- util:[
-  {t:["Check eligibility","Revisar elegibilidad"],w:["Community partner","Organización comunitaria"],c:[
-   ["Owner vs renter confirmed (renters need landlord OK)","Dueño o inquilino confirmado (inquilino necesita permiso del dueño)"],
-   ["Income checked by the partner before any no-cost work","Ingresos revisados por la organización antes de trabajo sin costo"],
-   ["Address and utility provider confirmed","Dirección y compañía de servicios confirmadas"]]},
-  {t:["Home energy assessment","Evaluación de energía"],w:["Approved assessor (owner present)","Evaluador aprobado (con el dueño presente)"],c:[
-   ["Assessment done with the owner present","Evaluación hecha con el dueño presente"],
-   ["Existing heating system, insulation levels and photos recorded","Calefacción actual, niveles de aislamiento y fotos anotados"],
-   ["Assessment form submitted to the program","Formulario de evaluación entregado al programa"]]},
-  {t:["Proposal","Propuesta"],w:["Contractor","Contratista"],c:[
-   ["Equipment qualifies and has an AHRI certificate","El equipo califica y tiene certificado AHRI"],
-   ["Sized correctly (load calc for heat pumps)","Tamaño correcto (cálculo de carga para bombas de calor)"],
-   ["Other funding (co-funding) applied first and listed","Otros fondos aplicados primero y anotados"],
-   ["Cost is within the current program maximum for that measure and home type","El costo está dentro del máximo actual del programa para esa medida y tipo de casa"]]},
-  {t:["Approval before install","Aprobación antes de instalar"],w:["Partner > program","Organización > programa"],c:[
-   ["Anything outside the normal rules got a written exception approval first","Todo lo fuera de las reglas normales tiene aprobación por escrito primero"],
-   ["Homeowner signed the required program pages","El dueño firmó las páginas requeridas"]],x:["Installing before an exception is approved in writing can mean the job doesn't get paid.","Instalar antes de que se apruebe una excepción por escrito puede significar que no se pague el trabajo."]},
-  {t:["Install and submit","Instalar y entregar"],w:["Contractor > partner","Contratista > organización"],c:[
-   ["Installed to program specs, with before/after photos","Instalado según las especificaciones, con fotos antes/después"],
-   ["Completion package sent before the program deadline (often about 60 days)","Paquete final mandado antes del plazo del programa (muchas veces unos 60 días)"]]}
- ],
- hh:[
-  {t:["Healthy home assessment","Evaluación de hogar saludable"],w:["Assessor","Evaluador"],c:[
-   ["Eligibility confirmed by the coordinator (income, location, renter permission)","Elegibilidad confirmada por el coordinador (ingresos, lugar, permiso del dueño)"],
-   ["Whole home assessed with photos","Toda la casa evaluada con fotos"],
-   ["Findings written as Problem, Cause, Impact, Solution","Hallazgos escritos como Problema, Causa, Impacto, Solución"],
-   ["CO alarms / radon kits left where needed","Alarmas de CO / kits de radón dejados donde se necesiten"]]},
-  {t:["Scope and bid","Alcance y cotización"],w:["Contractor","Contratista"],c:[
-   ["Bid itemized by category: accessibility, pre-weatherization, weatherization","Cotización por categoría: accesibilidad, pre-climatización, climatización"],
-   ["Health and safety fixes come before weatherization","Arreglos de salud y seguridad antes de climatizar"],
-   ["Ask if roof, electrical or other trades are subbed out","Preguntar si techo, electricidad u otros oficios se subcontratan"]]},
-  {t:["Approval before work","Aprobación antes de trabajar"],w:["Coordinator > program","Coordinador > programa"],c:[
-   ["Funds reserved / approved for this home","Fondos reservados / aprobados para esta casa"],
-   ["Contractor got the go-ahead in writing","El contratista recibió el visto bueno por escrito"]],x:["Don't start work until the funds are approved for that home.","No empiece el trabajo hasta que se aprueben los fondos para esa casa."]},
-  {t:["Do the work","Hacer el trabajo"],w:["Contractor","Contratista"],c:[
-   ["Before, during and after photos (follow the photo guidance)","Fotos antes, durante y después (siga la guía de fotos)"],
-   ["Lead-safe practices on pre-1978 homes","Prácticas seguras con plomo en casas antes de 1978"],
-   ["Changes cleared with the coordinator first","Cambios aprobados primero con el coordinador"]]},
-  {t:["Close out","Cierre"],w:["Contractor > coordinator","Contratista > coordinador"],c:[
-   ["Invoice matches the approved scope and follows the invoice requirements","La factura coincide con el alcance aprobado y sigue los requisitos"],
-   ["Quality check done after the work","Revisión de calidad después del trabajo"],
-   ["Homeowner knows what was done and how to maintain it","El dueño sabe qué se hizo y cómo mantenerlo"]]}
- ]
-};
-
-var GATES={
- city:[["QA provider approved the scope in writing","QA aprobó el alcance por escrito"],["Homeowner signed the acknowledgment for that exact scope","El dueño firmó la aceptación de ese alcance exacto"],["Installation price agreed in writing","Precio de instalación acordado por escrito"],["Permits pulled and notices done","Permisos sacados y avisos hechos"],["Contractor and subs are approved and current (CCB, insurance, training)","Contratista y subcontratistas aprobados y al día (CCB, seguro, capacitación)"]],
- util:[["Model and size on the invoice match the AHRI certificate","Modelo y tamaño en la factura coinciden con el certificado AHRI"],["Completion form matches the invoice (equipment replaced, what was installed)","El formulario final coincide con la factura (equipo reemplazado, lo instalado)"],["Co-funding listed on the invoice","Otros fondos anotados en la factura"],["Homeowner's signed page included","Página firmada por el dueño incluida"],["Install photos included","Fotos de la instalación incluidas"],["Sent before the program deadline","Mandado antes del plazo del programa"]]
-};
-
-var MEASURES=[
- {n:["Attic (flat)","Ático (plano)"],s:[["R-49 or more, or fill the cavity","R-49 o más, o llenar la cavidad"],["Air seal first; seal and insulate exhaust ducts","Sellar primero; sellar y aislar los ductos de extracción"],["Venting: 1:300 with high and low vents, or 1:150 high only","Ventilación: 1:300 con ventilas altas y bajas, o 1:150 solo altas"]]},
- {n:["Floor / crawlspace","Piso / crawlspace"],s:[["R-30 or more, or fill the cavity","R-30 o más, o llenar la cavidad"],["Follow the crawlspace checklist; air seal penetrations","Seguir la lista de crawlspace; sellar las penetraciones"]]},
- {n:["Walls","Paredes"],s:[["R-13 or fill the cavity","R-13 o llenar la cavidad"],["All heated exterior walls insulated","Todas las paredes exteriores con calefacción aisladas"]]},
- {n:["Knee walls / rim joists","Knee walls / rim joists"],s:[["Knee walls: R-15 (2x4) or R-21 (2x6)","Knee walls: R-15 (2x4) o R-21 (2x6)"],["Rim joists: R-15 minimum","Rim joists: mínimo R-15"]]},
- {n:["Air sealing","Sellado de aire"],s:[["Required on multi-measure jobs","Requerido en trabajos de varias medidas"],["Blower door before and after; combustion safety per BPI","Blower door antes y después; seguridad de combustión según BPI"],["Radon test at the end of the project","Prueba de radón al final del proyecto"]]},
- {n:["Ducts","Ductos"],s:[["Sealing required on all HVAC projects","Sellado requerido en todo proyecto HVAC"],["Ducts in unconditioned space first; measure before and after","Primero los ductos en espacios sin calefacción; medir antes y después"]]},
- {n:["Heat pump (ducted or ductless)","Bomba de calor (con o sin ductos)"],s:[["Load calc based on the house after weatherization","Cálculo de carga con la casa ya climatizada"],["10-year equipment warranty minimum","Garantía mínima de 10 años"],["Inverter / variable-speed sized to the load","Inverter / velocidad variable según la carga"],["Ducted: static pressure and TrueFlow tests","Con ductos: pruebas de presión estática y TrueFlow"],["Pre-approval to switch ducted to ductless, add a coil to a gas furnace, or keep the old system as primary","Pre-aprobación para cambiar de ductos a sin ductos, poner un coil en un horno de gas, o dejar el sistema viejo como principal"]]},
- {n:["Heat pump water heater","Calentador de agua con bomba de calor"],s:[["Meets NEEA Advanced Water Heater spec v8.1","Cumple la especificación NEEA v8.1"],["Model is on the qualified product list","El modelo está en la lista de productos calificados"]]},
- {n:["Exhaust fans","Extractores"],s:[["ENERGY STAR fans","Extractores ENERGY STAR"],["Ducts insulated to R-8; timer or humidistat control","Ductos aislados a R-8; control con timer o humidistato"],["Set to ASHRAE 62.2-2016","Programado según ASHRAE 62.2-2016"]]},
- {n:["Windows and doors","Ventanas y puertas"],s:[["ENERGY STAR Northern, U-0.26 or better","ENERGY STAR Northern, U-0.26 o mejor"],["Never stand-alone; weatherization first","Nunca solas; primero climatizar"],["Needs pre-approval","Necesita pre-aprobación"]]},
- {n:["Repairs that enable energy work","Reparaciones necesarias para el trabajo de energía"],s:[["Up to 40% of a project's construction budget","Hasta 40% del presupuesto de construcción del proyecto"],["At least 70% of all construction spending goes to energy work","Al menos 70% de todo el gasto va a trabajo de energía"]]}
-];
-
-var PRINC=[["Dry: leaks, moisture, drainage","Seco: goteras, humedad, drenaje"],["Clean: easy to clean, no clutter hazards","Limpio: fácil de limpiar, sin riesgos por desorden"],["Pest-free: entry points sealed","Sin plagas: entradas selladas"],["Safe: trips, falls, fire, electrical, CO and smoke alarms","Seguro: caídas, incendio, electricidad, alarmas de CO y humo"],["Contaminant-free: lead, asbestos, radon, mold","Sin contaminantes: plomo, asbesto, radón, moho"],["Ventilated: bath and kitchen exhaust, fresh air","Ventilado: extractores de baño y cocina, aire fresco"],["Maintained: roof, siding, plumbing in good shape","Mantenido: techo, siding, plomería en buen estado"],["Thermally controlled: heating, cooling, insulation","Control de temperatura: calefacción, enfriamiento, aislamiento"]];
-
 var lang="en";
-function L(p){return p[lang==="es"?1:0];}
-function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
-function storeDel(k){try{localStorage.removeItem(k);}catch(e){}}
+function L(p){return p==null?"":(typeof p==="string"?p:p[lang==="es"?1:0]);}
+function S(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}return null;}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 
-function renderSteps(key){
- var ol=document.getElementById("steps-"+key), open={};
- Array.prototype.forEach.call(ol.querySelectorAll("details"),function(d,i){open[i]=d.open;});
- ol.innerHTML="";
- STEPS[key].forEach(function(st,i){
-  var li=document.createElement("li"), d=document.createElement("details");
-  d.className="step"; if(open[i]) d.open=true;
-  var h='<summary><span class="num">'+(i+1)+'</span><span>'+esc(L(st.t))+'</span><span class="prog" id="p-'+key+'-'+i+'"></span></summary>';
-  h+='<div class="who">'+(lang==="es"?"Quién: ":"Who: ")+esc(L(st.w))+'</div><ul class="checks">';
-  st.c.forEach(function(c,j){var id="rh-"+key+"-"+i+"-"+j;h+='<li><label><input type="checkbox" data-k="'+id+'"'+(store(id)==="1"?" checked":"")+'> <span>'+esc(L(c))+'</span></label></li>';});
-  h+='</ul>'; if(st.x) h+='<div class="warnline">'+esc(L(st.x))+'</div>';
-  d.innerHTML=h; li.appendChild(d); ol.appendChild(li);
- });
- updateProg(key);
-}
-function updateProg(key){
- STEPS[key].forEach(function(st,i){
-  var n=0; st.c.forEach(function(c,j){if(store("rh-"+key+"-"+i+"-"+j)==="1")n++;});
-  var el=document.getElementById("p-"+key+"-"+i); if(!el)return;
-  el.textContent=n+"/"+st.c.length+(n===st.c.length?" ✓":""); el.className="prog"+(n===st.c.length?" done":"");
- });
-}
-function renderGate(key,outId){
- var ul=document.getElementById("gate-"+key); ul.innerHTML="";
- GATES[key].forEach(function(g,j){var id="rh-g-"+key+"-"+j;var li=document.createElement("li");li.innerHTML='<label><input type="checkbox" data-k="'+id+'"'+(store(id)==="1"?" checked":"")+'> <span>'+esc(L(g))+'</span></label>';ul.appendChild(li);});
- updateGate(key,outId);
-}
-function updateGate(key,outId){
- var all=GATES[key].every(function(g,j){return store("rh-g-"+key+"-"+j)==="1";});
- var o=document.getElementById(outId);
- if(key==="city"){o.textContent=all?(lang==="es"?"✓ Listo para instalar":"✓ Ready to install"):(lang==="es"?"✕ Todavía no instale":"✕ Not ready to install yet");}
- else{o.textContent=all?(lang==="es"?"✓ Listo para entregar":"✓ Ready to submit"):(lang==="es"?"✕ Revise lo que falta antes de entregar":"✕ Fix what's missing before you submit");}
- o.className="gate "+(all?"result ok":"result bad");
-}
-function renderMeasures(){
- var sel=document.getElementById("measure"), cur=sel.value;
- sel.innerHTML='<option value="">'+(lang==="es"?"Escoja una medida…":"Choose a measure…")+'</option>';
- MEASURES.forEach(function(m,i){var o=document.createElement("option");o.value=i;o.textContent=L(m.n);sel.appendChild(o);});
- sel.value=cur; showMeasure();
-}
-function showMeasure(){
- var v=document.getElementById("measure").value, out=document.getElementById("measureOut");
- out.innerHTML=v===""?"":MEASURES[+v].s.map(function(s){return "<li>"+esc(L(s))+"</li>";}).join("");
-}
-function num(id){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?null:v;}
-function scope(){
- var sv=num("sv"),rp=num("rp"),en=num("en"),o=document.getElementById("scopeOut"),msg=[],bad=false,warn=false;
- if(sv===null&&rp===null&&en===null){o.className="result";o.textContent=T.scopeEmpty[lang==="es"?1:0];return;}
- if(sv!==null){if(sv>=10)msg.push(lang==="es"?"✓ Ahorro de "+sv+"% (meta 10%+)":"✓ "+sv+"% savings (goal 10%+)");else{bad=true;msg.push(lang==="es"?"✕ Solo "+sv+"%: necesita al menos 10%. Agregue medidas que ahorren más en la factura.":"✕ Only "+sv+"%: needs at least 10%. Add measures with bigger bill savings.");}}
- if(rp!==null&&en!==null&&(rp+en)>0){var pct=Math.round(rp/(rp+en)*1000)/10;
-  if(pct<=30)msg.push(lang==="es"?"✓ Reparaciones "+pct+"% del total":"✓ Repairs are "+pct+"% of the total");
-  else if(pct<=40){warn=true;msg.push(lang==="es"?"! Reparaciones "+pct+"%: dentro del 40% por proyecto, pero el programa necesita 70%+ en energía en total":"! Repairs are "+pct+"%: inside the 40% per-project limit, but the program needs 70%+ on energy work overall");}
-  else{bad=true;msg.push(lang==="es"?"✕ Reparaciones "+pct+"%: más del límite de 40% por proyecto":"✕ Repairs are "+pct+"%: over the 40% per-project limit");}}
- o.className="result "+(bad?"bad":warn?"warn":"ok"); o.innerHTML=msg.map(esc).join("<br>");
-}
-function budget(){
- var a=num("bA"),p=num("bP"),w=num("bW"),o=document.getElementById("budOut"),msg=[],bad=false;
- if(a===null&&p===null&&w===null){o.className="result";o.textContent=T.budEmpty[lang==="es"?1:0];return;}
- function chk(v,cap,en,es){if(v===null)return;if(v>cap){bad=true;msg.push((lang==="es"?"✕ "+es+" $"+v.toLocaleString()+" pasa el límite usual de $":"✕ "+en+" $"+v.toLocaleString()+" is over the usual $")+cap.toLocaleString());}else msg.push("✓ "+(lang==="es"?es:en)+" $"+v.toLocaleString());}
- chk(a,2000,"Accessibility","Accesibilidad");chk(p,15000,"Pre-weatherization","Pre-climatización");chk(w,5000,"Weatherization","Climatización");
- var t=(a||0)+(p||0)+(w||0); msg.push((lang==="es"?"Total del trabajo: $":"Work total: $")+t.toLocaleString()+(lang==="es"?" (el máximo por casa suele ser $22,750 incluyendo la evaluación)":" (the per-home max is usually $22,750 including the assessment)"));
- o.className="result "+(bad?"bad":"ok"); o.innerHTML=msg.map(esc).join("<br>");
-}
-function renderPrinc(){document.getElementById("princOut").innerHTML=PRINC.map(function(p){return "<li>"+esc(L(p))+"</li>";}).join("");}
+var T={
+ title:["Retrofit Helper","Guía de Retrofit"],
+ lede:["Every program works differently. Pick the program for your job, choose if you're the assessor or the contractor, and go one step at a time.","Cada programa funciona diferente. Escoja el programa de su trabajo, diga si es el evaluador o el contratista, y vaya paso por paso."],
+ disclaimer:["Unofficial helper. It is not from any program or agency. Rules change, so always follow the program's current official guidelines and the organization you're working with.","Guía no oficial. No viene de ningún programa ni agencia. Las reglas cambian, así que siempre siga las guías oficiales actuales y a la organización con la que trabaja."],
+ pickH:["1. Which program is this job?","1. ¿De qué programa es este trabajo?"],
+ cmpLink:["Not sure which one? Compare the 3 programs","¿No sabe cuál? Compare los 3 programas"],
+ emptyMsg:["Pick a program above to see its steps.","Escoja un programa arriba para ver sus pasos."],
+ cmpH:["Compare the 3 programs side by side","Compare los 3 programas lado a lado"],
+ anyH:["For any contractor: licenses, safety, tools","Para cualquier contratista: licencias, seguridad, herramientas"],
+ diffH:["How this program is different","Lo que hace diferente a este programa"],
+ roleH:["2. I'm the:","2. Yo soy el:"],
+ rA:["Assessor","Evaluador"],rC:["Contractor","Contratista"],rB:["Show everything","Ver todo"],
+ stepsH:["3. Go step by step","3. Vaya paso por paso"],
+ doH:["What to do","Qué hacer"],needH:["What you need","Qué necesita"],nextH:["What happens next","Qué sigue"],
+ stepOf:["Step {n} of {t}","Paso {n} de {t}"],whoLbl:["Who leads: ","Quién dirige: "],
+ back:["← Back","← Atrás"],next:["Next step →","Siguiente paso →"],finish:["Last step ✓","Último paso ✓"],
+ notYou:["Nothing to check off on this step. It's handled by: ","Nada que marcar en este paso. Lo hace: "],
+ factsH:["Key numbers and rules","Números y reglas clave"],linksH:["Official documents and tools","Documentos oficiales y herramientas"],
+ sel:["Selected ✓","Seleccionado ✓"],use:["Use this one →","Usar este →"],
+ foot:["Unofficial guide. Program names and documents belong to their owners. Checkmarks save only in this browser.","Guía no oficial. Los nombres y documentos pertenecen a sus dueños. Las marcas se guardan solo en este navegador."],
+ reset:["Clear my checkmarks","Borrar mis marcas"],print:["Print","Imprimir"],
+ tA:["Assessor","Evaluador"],tC:["Contractor","Contratista"],tO:["Organization","Organización"]
+};
 
+/* checklist item: [role, en, es]  a=assessor c=contractor o=organization (info only, no checkbox) */
+var P={
+city:{ic:"🏙️",color:"var(--c1)",
+ name:["City clean energy grant (Portland)","Subsidio de energía limpia (Portland)"],
+ use:[["Home is inside Portland city limits","La casa está dentro de los límites de Portland"],["A local organization got a city grant to upgrade homes","Una organización local recibió un subsidio de la ciudad"],["Job needs an energy model (Snugg Pro)","El trabajo necesita un modelo de energía (Snugg Pro)"]],
+ diff:[["The city pays through a local organization (the grantee). You work for them, not the homeowner. The homeowner pays $0.","La ciudad paga por medio de una organización local. Usted trabaja para ellos, no para el dueño. El dueño paga $0."],
+  ["An energy model in Snugg Pro must show at least 10% savings before anything is approved.","Un modelo de energía en Snugg Pro debe mostrar al menos 10% de ahorro antes de aprobar algo."],
+  ["A QA company reviews the scope BEFORE install and inspects AFTER. Nothing gets installed without their written OK.","Una compañía de QA revisa el alcance ANTES de instalar e inspecciona DESPUÉS. No se instala nada sin su aprobación por escrito."],
+  ["Contractors must pay workers at least 180% of Oregon minimum wage and complete the safe and respectful jobsite training.","Los contratistas deben pagar al menos 180% del salario mínimo de Oregon y tomar la capacitación de lugar de trabajo seguro y respetuoso."]],
+ steps:[
+  {t:["Confirm the home","Confirmar la casa"],who:["Organization","Organización"],
+   p:["Before anyone goes out, make sure the home can be in the program.","Antes de ir, confirme que la casa puede entrar al programa."],
+   d:[["o","Organization confirms the homeowner is interested and owns the home","La organización confirma que el dueño está interesado y es dueño de la casa"],["a","Look up the address on Portland Maps: Jurisdiction must say Portland","Busque la dirección en Portland Maps: Jurisdiction debe decir Portland"],["a","Check the owner on record matches the homeowner (mobile home: they need the title)","Revise que el dueño registrado sea el cliente (casa móvil: necesita el título)"],["c","Get the homeowner's name, address, phone and language from the organization","Pida a la organización el nombre, dirección, teléfono e idioma del dueño"]],
+   n:[["Address and homeowner contact","Dirección y contacto del dueño"],["Portland Maps (link below)","Portland Maps (enlace abajo)"]],
+   x:["The organization assigns the job. The assessor and contractor schedule the home visit.","La organización asigna el trabajo. El evaluador y el contratista agendan la visita."],
+   w:["A Portland mailing address is not enough. Gresham, Milwaukie, Fairview and county addresses don't qualify.","Una dirección de correo de Portland no es suficiente. Gresham, Milwaukie, Fairview y el condado no califican."]},
+  {t:["Test-in visit","Visita de prueba inicial"],who:["Assessor (BPI Building Analyst Professional)","Evaluador (BPI Building Analyst Professional)"],
+   p:["Measure how the house performs today. This is the 'before' picture.","Mida cómo funciona la casa hoy. Esta es la foto de 'antes'."],
+   d:[["a","Create the job in Snugg Pro under the city grant program the organization tells you","Cree el trabajo en Snugg Pro bajo el programa de la ciudad que le diga la organización"],["a","Blower door test (before)","Prueba de blower door (antes)"],["a","Duct leakage, airflow and static pressure if it has ducts","Fugas de ductos, flujo y presión estática si tiene ductos"],["a","Combustion safety test on gas appliances","Prueba de seguridad de combustión en aparatos de gas"],["a","Start a radon test if you can","Empiece una prueba de radón si puede"],["a","Photos of everything, plus year built, floors, bedrooms, foundation, sq ft, ceiling height","Fotos de todo, más año, pisos, recámaras, cimiento, pies cuadrados, altura del techo"],["c","Walk the house with the assessor so you can price the work","Recorra la casa con el evaluador para cotizar el trabajo"]],
+   n:[["Blower door, duct tester, combustion analyzer","Blower door, probador de ductos, analizador de combustión"],["Radon kit, camera, tape measure","Kit de radón, cámara, cinta de medir"]],
+   x:["The assessor builds the upgrade plan in Snugg Pro.","El evaluador arma el plan de mejoras en Snugg Pro."]},
+  {t:["Build the scope and price","Armar el alcance y el precio"],who:["Assessor + contractor","Evaluador + contratista"],tool:"scope",
+   p:["Decide what work gets done. The model has to prove it saves at least 10%.","Decida qué trabajo se hace. El modelo tiene que probar que ahorra al menos 10%."],
+   d:[["a","Model the upgrades in Snugg Pro: at least 10% energy savings","Modele las mejoras en Snugg Pro: al menos 10% de ahorro"],["a","Include whole-home air sealing (required when there's more than one measure)","Incluya sellado de aire de toda la casa (requerido con más de una medida)"],["a","Put the biggest bill-savings measures first","Ponga primero las medidas que más ahorran"],["c","Heat pump: do a load calc for the house after weatherization","Bomba de calor: haga el cálculo de carga para la casa ya climatizada"],["c","Write the estimate so every line matches the Snugg Pro measures","Haga el estimado para que cada línea coincida con Snugg Pro"],["c","Include equipment specs: make, model, size, efficiency, AHRI number","Incluya especificaciones: marca, modelo, tamaño, eficiencia, número AHRI"],["c","Agree on the price with the organization in writing (email is fine)","Acuerde el precio con la organización por escrito (correo está bien)"]],
+   n:[["Snugg Pro access","Acceso a Snugg Pro"],["Load calculator (BetterBuiltNW)","Calculadora de carga (BetterBuiltNW)"],["Equipment spec sheets","Hojas de especificaciones"]],
+   x:["The organization sends everything to the QA company for review.","La organización manda todo a la compañía de QA para revisión."],
+   w:["Repairs can be up to 40% of a project, but overall most of the money (70%+) has to go to energy work.","Las reparaciones pueden ser hasta 40% del proyecto, pero en total la mayoría del dinero (70%+) tiene que ir a trabajo de energía."]},
+  {t:["QA approval + homeowner OK","Aprobación de QA + OK del dueño"],who:["Organization","Organización"],
+   p:["Wait for the green light. This is the step people skip and regret.","Espere la luz verde. Este es el paso que la gente se salta y se arrepiente."],
+   d:[["o","Organization registers the project and uploads the Snugg Pro report, estimate, load calc, specs and photos","La organización registra el proyecto y sube el reporte de Snugg Pro, estimado, cálculo de carga, especificaciones y fotos"],["o","QA reviews it (usually about 5 business days)","QA lo revisa (normalmente unos 5 días hábiles)"],["a","Fix anything QA asks for in the model","Arregle lo que QA pida en el modelo"],["c","Fix anything QA asks for in the estimate","Arregle lo que QA pida en el estimado"],["o","Homeowner reviews the approved scope and signs","El dueño revisa el alcance aprobado y firma"]],
+   n:[["Patience: don't order equipment yet","Paciencia: no pida equipo todavía"]],
+   x:["Once there's written QA approval AND the homeowner's signature, the contractor can schedule the install.","Con la aprobación de QA por escrito Y la firma del dueño, el contratista puede agendar la instalación."],
+   w:["No install before written QA approval and the homeowner's signature. Work done early may not get paid.","No se instala antes de la aprobación de QA y la firma del dueño. El trabajo hecho antes puede no pagarse."]},
+  {t:["Install","Instalación"],who:["Contractor","Contratista"],tool:"gate",
+   p:["Do exactly what was approved, the way the checklists say.","Haga exactamente lo aprobado, como dicen las listas."],
+   d:[["c","Install only the approved scope, following the city installation checklists","Instale solo el alcance aprobado, siguiendo las listas de la ciudad"],["c","Any change? Send it to the organization for QA approval before doing it","¿Algún cambio? Mándelo a la organización para aprobación de QA antes de hacerlo"],["c","Home built before 1978: lead-safe (RRP) practices","Casa antes de 1978: prácticas seguras con plomo (RRP)"],["c","Suspect asbestos? Stop and report it","¿Posible asbesto? Pare y avise"],["c","Pull permits; take before, during and after photos","Saque permisos; tome fotos antes, durante y después"],["c","Never charge the homeowner anything","Nunca le cobre nada al dueño"],["c","Track workers' hours and pay for the program's workforce report","Anote horas y pago de trabajadores para el reporte del programa"]],
+   n:[["Installation checklists (link below)","Listas de instalación (enlace abajo)"],["Permits","Permisos"]],
+   x:["When the install is done, the assessor does the test-out.","Al terminar la instalación, el evaluador hace la prueba final."]},
+  {t:["Test-out and final QA","Prueba final y QA final"],who:["Assessor + contractor","Evaluador + contratista"],
+   p:["Prove the work was done right. This is the 'after' picture.","Pruebe que el trabajo se hizo bien. Esta es la foto de 'después'."],
+   d:[["c","Enter what was installed in Snugg Pro (post-install)","Ponga lo instalado en Snugg Pro (después de instalar)"],["a","Blower door (after), duct test if needed, finish the radon test","Blower door (después), prueba de ductos si aplica, termine la de radón"],["o","Organization requests the final QA visit and sends scope changes + final invoice","La organización pide la visita final de QA y manda cambios + factura final"],["c","Fix anything on the QA report within 30 days","Arregle lo del reporte de QA en 30 días"],["c","Leave warranties, manuals and instructions with the homeowner","Deje garantías, manuales e instrucciones con el dueño"]],
+   n:[["Testing equipment","Equipo de pruebas"],["Final invoice","Factura final"]],
+   x:["After QA passes, the contractor invoices the organization.","Cuando pasa QA, el contratista le factura a la organización."]},
+  {t:["Get paid","Cobrar"],who:["Contractor","Contratista"],
+   p:["Bill the organization, not the homeowner.","Cobre a la organización, no al dueño."],
+   d:[["c","Send the invoice to the organization (it should match the approved scope)","Mande la factura a la organización (debe coincidir con el alcance aprobado)"],["c","Include workforce info (hours, wages) if they ask for it","Incluya información de trabajadores (horas, pagos) si la piden"],["c","Keep your records; programs can audit them for years","Guarde sus registros; los programas pueden revisarlos por años"]],
+   n:[["Invoice","Factura"],["Photos and checklists","Fotos y listas"]],
+   x:["Payment timing depends on your contract with the organization.","El tiempo de pago depende de su contrato con la organización."]}
+ ],
+ facts:[[["Energy savings","Ahorro de energía"],["10% or more (Snugg Pro)","10% o más (Snugg Pro)"]],[["Homeowner pays","El dueño paga"],["$0","$0"]],[["QA review","Revisión de QA"],["About 5 business days","Unos 5 días hábiles"]],[["Corrections","Correcciones"],["Within 30 days","En 30 días"]],[["Worker pay","Pago a trabajadores"],["180% of OR minimum wage","180% del mínimo de OR"]],[["Repairs","Reparaciones"],["Up to 40% per project","Hasta 40% por proyecto"]],[["Attic / floor / walls","Ático / piso / paredes"],["R-49 / R-30 / R-13","R-49 / R-30 / R-13"]],[["Heat pump","Bomba de calor"],["Load calc after weatherization","Cálculo de carga ya climatizada"]],[["Windows","Ventanas"],["Never alone, needs pre-approval","Nunca solas, necesitan pre-aprobación"]]],
+ links:[["https://www.portlandmaps.com",["Portland Maps (is it inside Portland?)","Portland Maps (¿está dentro de Portland?)"],"City of Portland"],["https://www.portland.gov/bps/cleanenergy/documents/pcef-eligible-measures-eere-home-retrofit/download",["Eligible measures, home retrofits","Medidas elegibles, retrofits de casas"],"City of Portland"],["https://www.portland.gov/bps/cleanenergy/documents/pcef-eere-compiled-checklists-2026/download",["Installation checklists 2026","Listas de instalación 2026"],"City of Portland"],["https://www.portland.gov/bps/cleanenergy/energy-efficiency-and-renewable-energy",["Energy efficiency resources","Recursos de eficiencia"],"City of Portland"],["https://www.portland.gov/bps/cleanenergy/pcef-resources/grantee-onboarding",["What grant-funded projects need","Lo que necesitan los proyectos"],"City of Portland"],["https://www.portland.gov/bps/cleanenergy/workforce-and-contractor-training/workforce-and-contractor-training-videos",["Safe and respectful jobsite training","Capacitación de lugar de trabajo seguro y respetuoso"],"City of Portland"],["https://hvac.betterbuiltnw.com/",["HVAC load calculator","Calculadora de carga HVAC"],"BetterBuiltNW"],["https://snuggpro.com/webinars/training",["Snugg Pro training","Capacitación de Snugg Pro"],"Snugg Pro"],["https://neea.org/resources/residential-hpwh-qualified-products-list",["Qualified heat pump water heaters","Calentadores con bomba de calor calificados"],"NEEA"]]
+},
+util:{ic:"⚡",color:"var(--c2)",
+ name:["Utility incentives (Energy Trust)","Incentivos de la compañía (Energy Trust)"],
+ use:[["Customer of PGE, Pacific Power or NW Natural","Cliente de PGE, Pacific Power o NW Natural"],["A community partner is helping a lower-income homeowner","Una organización comunitaria ayuda a un dueño de bajos ingresos"],["Specific upgrades: heat pump, water heater, insulation","Mejoras específicas: bomba de calor, calentador, aislamiento"]],
+ diff:[["Paid by utility incentives, usually through a community partner organization. There's a set maximum per upgrade.","Se paga con incentivos de la compañía, normalmente por medio de una organización comunitaria. Hay un máximo fijo por mejora."],
+  ["The contractor must be an Energy Trust trade ally.","El contratista debe ser trade ally de Energy Trust."],
+  ["Income is checked first for no-cost upgrades. Any other funding (co-funding) gets applied first.","Primero se revisan ingresos para mejoras sin costo. Otros fondos se aplican primero."],
+  ["No 10% savings model. The big risk is paperwork: model, size and invoice must match exactly, and there's a deadline after install.","No necesita modelo de 10%. El riesgo grande son los documentos: modelo, tamaño y factura deben coincidir, y hay un plazo después de instalar."]],
+ steps:[
+  {t:["Check eligibility","Revisar elegibilidad"],who:["Community partner","Organización comunitaria"],
+   p:["The partner makes sure the household can get the incentive.","La organización confirma que la familia puede recibir el incentivo."],
+   d:[["o","Owner or renter confirmed (renters need the landlord's OK)","Dueño o inquilino confirmado (inquilino necesita permiso del dueño)"],["o","Income checked before any no-cost work","Ingresos revisados antes de cualquier trabajo sin costo"],["o","Utility account and address confirmed","Cuenta de servicios y dirección confirmadas"],["c","Make sure you're an active Energy Trust trade ally","Confirme que es trade ally activo de Energy Trust"]],
+   n:[["Trade ally status (contractor)","Estatus de trade ally (contratista)"]],
+   x:["The partner schedules the home energy assessment.","La organización agenda la evaluación de energía."],
+   w:["Never promise the homeowner it's free until the partner confirms eligibility.","Nunca le prometa al dueño que es gratis hasta que la organización confirme."]},
+  {t:["Home energy assessment","Evaluación de energía"],who:["Assessor","Evaluador"],
+   p:["Record what's in the house now so the program knows what's being replaced.","Anote lo que hay en la casa para que el programa sepa qué se reemplaza."],
+   d:[["a","Do the visit with the owner present","Haga la visita con el dueño presente"],["a","Record the current heating system, fuel and backup heat","Anote la calefacción actual, combustible y calefacción de respaldo"],["a","Record insulation levels (attic, floor, walls) and take photos","Anote niveles de aislamiento (ático, piso, paredes) y tome fotos"],["a","Note if insulation already meets requirements (then no incentive is needed for it)","Anote si el aislamiento ya cumple (entonces no se necesita incentivo)"],["o","Partner submits the assessment form to the program","La organización entrega el formulario de evaluación"]],
+   n:[["Camera, tape measure, notes on existing equipment","Cámara, cinta de medir, notas del equipo actual"]],
+   x:["The contractor writes a proposal.","El contratista hace una propuesta."]},
+  {t:["Proposal","Propuesta"],who:["Contractor","Contratista"],
+   p:["Price the upgrade so it fits inside the program's rules and maximums.","Cotice la mejora para que quepa en las reglas y máximos del programa."],
+   d:[["c","Pick equipment that qualifies and has an AHRI certificate","Escoja equipo que califique y tenga certificado AHRI"],["c","Size it right (load calc for heat pumps)","Tamaño correcto (cálculo de carga para bombas de calor)"],["c","Check the current maximum for that upgrade and home type (site-built and manufactured are different)","Revise el máximo actual para esa mejora y tipo de casa (casa construida y móvil son diferentes)"],["c","List any other funding (co-funding) on the proposal; it's applied first","Anote otros fondos en la propuesta; se aplican primero"],["o","Partner reviews and shares the options with the homeowner","La organización revisa y comparte las opciones con el dueño"]],
+   n:[["AHRI certificate","Certificado AHRI"],["Current incentive table from the program","Tabla actual de incentivos del programa"]],
+   x:["If it's inside the normal rules, it's ready. If not, it needs an exception first.","Si está dentro de las reglas, está listo. Si no, necesita una excepción primero."]},
+  {t:["Approval before install","Aprobación antes de instalar"],who:["Community partner","Organización comunitaria"],
+   p:["Anything outside the normal rules needs written approval before work starts.","Todo lo que esté fuera de las reglas necesita aprobación por escrito antes de empezar."],
+   d:[["o","Partner sends an exception request if anything is outside the rules","La organización manda una solicitud de excepción si algo está fuera de las reglas"],["o","Written approval received before scheduling","Aprobación por escrito recibida antes de agendar"],["o","Homeowner signs the required program pages","El dueño firma las páginas requeridas"]],
+   n:[["Written approval (email is fine)","Aprobación por escrito (correo está bien)"]],
+   x:["The contractor schedules the install.","El contratista agenda la instalación."],
+   w:["Installing before an exception is approved can mean the job doesn't get paid.","Instalar antes de que se apruebe una excepción puede significar que no se pague."]},
+  {t:["Install","Instalación"],who:["Contractor","Contratista"],
+   p:["Install to program specs and document everything.","Instale según las especificaciones y documente todo."],
+   d:[["c","Install the exact model and size on the proposal","Instale el modelo y tamaño exactos de la propuesta"],["c","Before and after photos (old equipment, new equipment, nameplates)","Fotos antes y después (equipo viejo, nuevo, placas)"],["c","Pull permits","Saque permisos"],["c","Get the homeowner's signature on the completion page","Consiga la firma del dueño en la página final"]],
+   n:[["Weatherization specs manual (link below)","Manual de especificaciones (enlace abajo)"]],
+   x:["Put together the completion package right away.","Arme el paquete final de inmediato."]},
+  {t:["Submit and get paid","Entregar y cobrar"],who:["Contractor + partner","Contratista + organización"],tool:"paper",
+   p:["Most rejections are paperwork that doesn't match. Check it before it goes in.","La mayoría de los rechazos son documentos que no coinciden. Revise antes de mandar."],
+   d:[["c","Send the partner your invoice, AHRI certificate, photos and signed page","Mande a la organización su factura, certificado AHRI, fotos y página firmada"],["o","Partner submits the completion package before the deadline (often about 60 days)","La organización entrega el paquete antes del plazo (muchas veces unos 60 días)"]],
+   n:[["Itemized invoice","Factura detallada"],["AHRI certificate","Certificado AHRI"],["Signed completion page, photos","Página final firmada, fotos"]],
+   x:["The program processes payment per your agreement with the partner.","El programa procesa el pago según su acuerdo con la organización."],
+   w:["Late or mismatched paperwork is the #1 reason jobs don't get paid.","Documentos tarde o que no coinciden son la razón #1 por la que no se paga."]}
+ ],
+ facts:[[["Energy model","Modelo de energía"],["Not required","No requerido"]],[["Contractor","Contratista"],["Must be a trade ally","Debe ser trade ally"]],[["Who qualifies","Quién califica"],["Income checked by partner","Ingresos revisados por la organización"]],[["Incentive","Incentivo"],["Set max per upgrade and home type","Máximo fijo por mejora y tipo de casa"]],[["Co-funding","Otros fondos"],["Applied first, listed on invoice","Se aplica primero, en la factura"]],[["Deadline","Plazo"],["Often ~60 days after install","Muchas veces ~60 días después"]]],
+ links:[["https://www.energytrust.org/",["Program website and current incentives","Sitio del programa e incentivos actuales"],"Energy Trust of Oregon"],["https://www.energytrust.org/about/explore-energy-trust/about-partner-allies/",["Become a trade ally","Hágase trade ally"],"Energy Trust of Oregon"],["https://insider.energytrust.org/?p=21145",["Trade ally resources, training and forms","Recursos, capacitación y formularios para trade allies"],"Energy Trust of Oregon"],["https://www.energytrust.org/wp-content/uploads/2020/08/Specifications-Manual_Spanish.pdf",["Weatherization specs manual (Spanish)","Manual de especificaciones (español)"],"Energy Trust of Oregon"],["https://www.ahridirectory.org/",["AHRI certificate lookup","Buscar certificado AHRI"],"AHRI"],["https://hvac.betterbuiltnw.com/",["HVAC load calculator","Calculadora de carga HVAC"],"BetterBuiltNW"],["https://neea.org/resources/residential-hpwh-qualified-products-list",["Qualified heat pump water heaters","Calentadores con bomba de calor calificados"],"NEEA"],["https://www.homeenergyrebates.oregon.gov/contractor-center",["State home energy rebates: contractor enrollment","Reembolsos estatales: inscripción de contratistas"],"Oregon Department of Energy"]]
+},
+hh:{ic:"🏠",color:"var(--c3)",
+ name:["Healthy home repairs","Reparaciones de hogar saludable"],
+ use:[["Low-income household the organization serves","Familia de bajos ingresos que atiende la organización"],["Health or safety problems: leaks, mold, wiring, no heat","Problemas de salud o seguridad: goteras, moho, cables, sin calefacción"],["Repairs first, then weatherization","Primero reparaciones, luego climatización"]],
+ diff:[["It's a repair grant. Fix health and safety problems first, then weatherize.","Es un subsidio de reparación. Primero salud y seguridad, luego climatizar."],
+  ["No energy model or savings % needed. You work from a findings report.","No necesita modelo de energía ni % de ahorro. Trabaja con un reporte de hallazgos."],
+  ["Your bid is priced by category, and each category has a limit.","Su cotización va por categoría, y cada categoría tiene un límite."],
+  ["The organization has to get funds reserved for that home before you start. Photos are required to get paid.","La organización tiene que reservar fondos para esa casa antes de empezar. Las fotos son requeridas para cobrar."]],
+ steps:[
+  {t:["Intake","Registro"],who:["Organization","Organización"],
+   p:["The organization signs up the household and checks they qualify.","La organización registra a la familia y revisa que califique."],
+   d:[["o","Income form signed by the household","Formulario de ingresos firmado por la familia"],["o","Demographic survey done","Encuesta demográfica hecha"],["o","Renters: landlord agrees to the repairs","Inquilinos: el dueño acepta las reparaciones"]],
+   n:[["Nothing from you yet","Nada de usted todavía"]],
+   x:["The organization schedules the healthy home assessment.","La organización agenda la evaluación de hogar saludable."]},
+  {t:["Healthy home assessment","Evaluación de hogar saludable"],who:["Assessor","Evaluador"],
+   p:["Walk the whole house looking for anything that hurts health or safety.","Recorra toda la casa buscando lo que afecte la salud o seguridad."],
+   d:[["a","Check every area: dry, clean, pest-free, safe, contaminant-free, ventilated, maintained, comfortable temperature","Revise todo: seco, limpio, sin plagas, seguro, sin contaminantes, ventilado, mantenido, temperatura cómoda"],["a","Write each finding as Problem, Cause, Health/Safety Impact, Solution","Escriba cada hallazgo como Problema, Causa, Impacto, Solución"],["a","Photos of each problem","Fotos de cada problema"],["a","Note missing smoke or CO alarms","Anote alarmas de humo o CO que falten"]],
+   n:[["Assessment form","Formulario de evaluación"],["Camera, moisture meter, flashlight","Cámara, medidor de humedad, linterna"]],
+   x:["The organization turns it into a findings report for contractors.","La organización lo convierte en un reporte de hallazgos para contratistas."]},
+  {t:["Findings report and bid","Reporte y cotización"],who:["Contractor","Contratista"],tool:"budget",
+   p:["You get a findings report (no client personal info). Send back an itemized bid by category.","Recibe un reporte de hallazgos (sin datos personales). Mande una cotización detallada por categoría."],
+   d:[["c","Price each item and group it: accessibility, pre-weatherization (repairs), weatherization","Cotice cada cosa y agrúpela: accesibilidad, pre-climatización (reparaciones), climatización"],["c","Health and safety fixes come before weatherization","Arreglos de salud y seguridad antes de climatizar"],["c","Say if you sub out roof, electrical or other trades","Diga si subcontrata techo, electricidad u otros"],["c","Bid the scope as written; don't ask for a budget range","Cotice el alcance como está escrito; no pida un rango de presupuesto"]],
+   n:[["Findings report","Reporte de hallazgos"],["Itemized bid","Cotización detallada"]],
+   x:["The organization compares bids and requests funds for the home.","La organización compara cotizaciones y pide fondos para la casa."]},
+  {t:["Funds approved","Fondos aprobados"],who:["Organization","Organización"],
+   p:["Wait until the money for this home is reserved and you get the go-ahead.","Espere a que el dinero para esta casa esté reservado y le den el visto bueno."],
+   d:[["o","Organization requests and gets funds reserved for this home","La organización pide y consigue fondos reservados para esta casa"],["c","Get the go-ahead in writing before you start","Reciba el visto bueno por escrito antes de empezar"]],
+   n:[["Written go-ahead","Visto bueno por escrito"]],
+   x:["Schedule the work with the homeowner.","Agende el trabajo con el dueño."],
+   w:["Don't start until funds are approved for that home.","No empiece hasta que se aprueben los fondos para esa casa."]},
+  {t:["Do the work","Hacer el trabajo"],who:["Contractor","Contratista"],
+   p:["Do the approved repairs and document them with photos.","Haga las reparaciones aprobadas y documéntelas con fotos."],
+   d:[["c","Before, during and after photos of every item (follow the photo guidance)","Fotos antes, durante y después de cada cosa (siga la guía de fotos)"],["c","Home built before 1978: lead-safe (RRP) practices","Casa antes de 1978: prácticas seguras con plomo (RRP)"],["c","Any change: clear it with the organization first","Cualquier cambio: apruébelo primero con la organización"]],
+   n:[["Photo guidance (link below)","Guía de fotos (enlace abajo)"]],
+   x:["Send the invoice and photos to the organization.","Mande la factura y fotos a la organización."]},
+  {t:["Invoice and close out","Factura y cierre"],who:["Contractor + organization","Contratista + organización"],
+   p:["Bill the organization and close out the job.","Cobre a la organización y cierre el trabajo."],
+   d:[["c","Invoice matches the approved bid and follows the invoice guidance","La factura coincide con la cotización aprobada y sigue la guía de facturas"],["c","Send all photos with the invoice","Mande todas las fotos con la factura"],["o","Organization reconciles the funds with the program","La organización concilia los fondos con el programa"],["o","Follow-up call with the homeowner about a month later","Llamada de seguimiento con el dueño como un mes después"]],
+   n:[["Invoice","Factura"],["Photos","Fotos"]],
+   x:["Done. Payment timing depends on your agreement with the organization.","Listo. El pago depende de su acuerdo con la organización."]}
+ ],
+ facts:[[["Energy model","Modelo de energía"],["Not required","No requerido"]],[["Assessment","Evaluación"],["Healthy home assessment ($750)","Evaluación de hogar saludable ($750)"]],[["Accessibility","Accesibilidad"],["Usually up to $2,000","Normalmente hasta $2,000"]],[["Pre-weatherization (repairs)","Pre-climatización (reparaciones)"],["Usually up to $15,000","Normalmente hasta $15,000"]],[["Weatherization","Climatización"],["Usually up to $5,000","Normalmente hasta $5,000"]],[["Per home max","Máximo por casa"],["Usually $22,750 incl. assessment","Normalmente $22,750 con evaluación"]],[["Photos","Fotos"],["Required for payment","Requeridas para cobrar"]]],
+ links:[["https://earthadvantage.org/climate-justice/hhgp-resources.html",["Program resources: eligible activities, photo and invoice guidance","Recursos: actividades elegibles, guía de fotos y facturas"],"Earth Advantage"],["https://www.oregon.gov/oha/PH/HEALTHYENVIRONMENTS/HEALTHYNEIGHBORHOODS/HEALTHYHOMESGRANTPROGRAM/Pages/More-Information.aspx",["State healthy homes grant program","Programa estatal de hogares saludables"],"Oregon Health Authority"],["https://www.oregon.gov/ohcs/energy-weatherization/Pages/weatherization-services.aspx",["Low-income weatherization (other help)","Climatización para bajos ingresos (otra ayuda)"],"Oregon Housing and Community Services"]]
+}};
+
+var ANY=[["https://www.oregon.gov/ccb/Pages/index.aspx",["CCB license (check or apply)","Licencia CCB (revisar o aplicar)"],"Oregon CCB"],["https://www.epa.gov/lead/renovation-repair-and-painting-program-contractors",["Lead-safe (RRP) certification for pre-1978 homes","Certificación RRP para casas antes de 1978"],"U.S. EPA"],["https://www.oregon.gov/deq/FilterDocs/asb-SurveyFS.pdf",["Asbestos survey rules","Reglas de inspección de asbesto"],"Oregon DEQ"],["https://www.osha.gov/training/outreach",["OSHA 10 / 30 training","Capacitación OSHA 10 / 30"],"OSHA"],["https://www.bpi.org/",["BPI certification (Building Analyst)","Certificación BPI (Building Analyst)"],"BPI"],["https://www.ahridirectory.org/",["AHRI certificate lookup","Buscar certificado AHRI"],"AHRI"],["https://hvac.betterbuiltnw.com/",["HVAC load calculator","Calculadora de carga HVAC"],"BetterBuiltNW"]];
+
+var CMP=[
+ [["Who pays","Quién paga"],["City grant, through a local organization","Subsidio de la ciudad, por una organización local"],["Utility incentives, through a community partner","Incentivos de la compañía, por una organización comunitaria"],["Repair grant, through a local organization","Subsidio de reparación, por una organización local"]],
+ [["Where","Dónde"],["Inside Portland city limits only","Solo dentro de Portland"],["Utility customers (PGE, Pacific Power, NW Natural)","Clientes de PGE, Pacific Power, NW Natural"],["Where the organization serves","Donde sirve la organización"]],
+ [["Assessment","Evaluación"],["BPI audit + Snugg Pro model","Auditoría BPI + modelo Snugg Pro"],["Home energy assessment","Evaluación de energía"],["Healthy home assessment","Evaluación de hogar saludable"]],
+ [["Savings needed","Ahorro requerido"],["10%+ modeled","10%+ modelado"],["No","No"],["No","No"]],
+ [["Contractor needs","El contratista necesita"],["CCB, insurance, 180% wage, safe and respectful training","CCB, seguro, salario 180%, capacitación"],["Trade ally, CCB","Trade ally, CCB"],["CCB, insurance, RRP if pre-1978","CCB, seguro, RRP si es antes de 1978"]],
+ [["Approval before work","Aprobación antes de trabajar"],["QA company + homeowner signature","Compañía de QA + firma del dueño"],["Only for exceptions","Solo para excepciones"],["Funds reserved for the home","Fondos reservados para la casa"]],
+ [["Biggest risk","Mayor riesgo"],["Installing before QA approval","Instalar antes de la aprobación de QA"],["Paperwork that doesn't match, or late","Documentos que no coinciden, o tarde"],["Starting before funds are approved","Empezar antes de que aprueben fondos"]]
+];
+var KEYS=["city","util","hh"];
+
+var cur=S("rh2-prog")||"", role=S("rh2-role")||"b";
+if(!P[cur])cur="";
+var view=document.getElementById("view");
+
+function stepIdx(k){var v=parseInt(S("rh2-step-"+k)||"0",10);return isNaN(v)?0:Math.max(0,Math.min(v,P[k].steps.length-1));}
+function checked(k,i,j){return S("rh2-"+k+"-"+i+"-"+j)==="1";}
+function mineItem(it){return it[0]!=="o"&&(role==="b"||it[0]===role);}
+function visible(it){return it[0]==="o"||mineItem(it);}
+function stepDone(k,i){var any=false,all=true;P[k].steps[i].d.forEach(function(it,j){if(mineItem(it)){any=true;if(!checked(k,i,j))all=false;}});return any&&all;}
+function txt(it){return lang==="es"?it[2]:it[1];}
+
+function renderPick(){
+ var h="";
+ KEYS.forEach(function(k){var p=P[k];
+  h+='<button type="button" class="prog" data-prog="'+k+'" aria-pressed="'+(k===cur)+'" style="--pc:'+p.color+'"><span class="ic" aria-hidden="true">'+p.ic+'</span><b>'+esc(L(p.name))+'</b><ul>'+p.use.map(function(u){return "<li>"+esc(L(u))+"</li>";}).join("")+'</ul><span class="go">'+esc(L(k===cur?T.sel:T.use))+'</span></button>';
+ });
+ document.getElementById("pick").innerHTML=h;
+}
+function tag(r){return '<span class="tag '+r+'">'+esc(L(r==="a"?T.tA:r==="c"?T.tC:T.tO))+'</span>';}
+
+function renderView(){
+ if(!cur){view.innerHTML='<div class="empty">'+esc(L(T.emptyMsg))+'</div>';return;}
+ var p=P[cur], i=stepIdx(cur), st=p.steps[i], h='<div style="--pc:'+p.color+'">';
+ h+='<div class="diff"><b>'+esc(L(T.diffH))+': '+esc(L(p.name))+'</b><ul>'+p.diff.map(function(d){return "<li>"+esc(L(d))+"</li>";}).join("")+'</ul></div>';
+ h+='<div class="role"><span>'+esc(L(T.roleH))+'</span>'+[["a",T.rA],["c",T.rC],["b",T.rB]].map(function(r){return '<button type="button" class="chip" data-role="'+r[0]+'" aria-pressed="'+(role===r[0])+'">'+esc(L(r[1]))+'</button>';}).join("")+'</div>';
+ h+='<h2>'+esc(L(T.stepsH))+'</h2><div class="rail">';
+ p.steps.forEach(function(s,j){var dn=stepDone(cur,j);h+='<button type="button" data-go="'+j+'" class="'+(dn?"done":"")+'"'+(j===i?' aria-current="step"':'')+'><span class="n">'+(dn?"✓":(j+1))+'</span>'+esc(L(s.t))+'</button>';});
+ h+='</div><section class="stage" id="stage"><div class="top"><span class="n">'+(i+1)+'</span><h2>'+esc(L(st.t))+'</h2></div>';
+ h+='<div class="whobar">'+esc(L(T.stepOf).replace("{n}",i+1).replace("{t}",p.steps.length))+' · '+esc(L(T.whoLbl))+'<b>'+esc(L(st.who))+'</b></div>';
+ h+='<p class="plain">'+esc(L(st.p))+'</p><h3>'+esc(L(T.doH))+'</h3><ul class="checks">';
+ var mine=0;
+ st.d.forEach(function(it,j){if(!visible(it))return;
+  if(it[0]==="o"){h+='<li><label style="cursor:default"><span style="width:20px;flex:none;text-align:center;color:var(--muted)">•</span><span>'+tag("o")+esc(txt(it))+'</span></label></li>';}
+  else{mine++;h+='<li><label><input type="checkbox" data-k="rh2-'+cur+'-'+i+'-'+j+'"'+(checked(cur,i,j)?" checked":"")+'><span>'+(role==="b"?tag(it[0]):"")+esc(txt(it))+'</span></label></li>';}
+ });
+ h+='</ul>';
+ if(!mine)h+='<p class="result">'+esc(L(T.notYou))+esc(L(st.who))+'</p>';
+ if(st.tool)h+=toolHTML(st.tool);
+ h+='<div class="two"><div class="box"><b>'+esc(L(T.needH))+'</b><ul>'+st.n.map(function(n){return "<li>"+esc(L(n))+"</li>";}).join("")+'</ul></div><div class="box"><b>'+esc(L(T.nextH))+'</b>'+esc(L(st.x))+'</div></div>';
+ if(st.w)h+='<div class="warnbox">⚠ '+esc(L(st.w))+'</div>';
+ h+='<div class="nav"><button type="button" class="btn ghost" data-go="'+(i-1)+'"'+(i===0?" disabled":"")+'>'+esc(L(T.back))+'</button>';
+ h+=i<p.steps.length-1?'<button type="button" class="btn" data-go="'+(i+1)+'">'+esc(L(T.next))+'</button>':'<span class="result ok" style="margin:0">'+esc(L(T.finish))+'</span>';
+ h+='</div></section>';
+ h+='<details class="more"><summary>'+esc(L(T.factsH))+'</summary><div class="facts">'+p.facts.map(function(f){return '<div class="fact"><span>'+esc(L(f[0]))+'</span><b>'+esc(L(f[1]))+'</b></div>';}).join("")+'</div></details>';
+ h+='<details class="more"><summary>'+esc(L(T.linksH))+'</summary><ul class="links">'+linkList(p.links)+'</ul></details>';
+ h+='</div>';
+ view.innerHTML=h; wireTool(st.tool);
+ var ac=view.querySelector('.rail [aria-current="step"]'),rl=view.querySelector(".rail");if(ac&&rl)rl.scrollLeft=Math.max(0,ac.offsetLeft-rl.offsetLeft-16);
+}
+function linkList(a){return a.map(function(l){return '<li><a href="'+l[0]+'" target="_blank" rel="noopener">'+esc(L(l[1]))+'<small>'+esc(l[2])+'</small></a></li>';}).join("");}
+
+var GATE={gate:[["QA approved the scope in writing","QA aprobó el alcance por escrito"],["Homeowner signed for this exact scope","El dueño firmó este alcance exacto"],["Price agreed in writing","Precio acordado por escrito"],["Permits pulled","Permisos sacados"],["You and your subs are approved and current (CCB, insurance, training)","Usted y sus subcontratistas están aprobados y al día (CCB, seguro, capacitación)"]],
+ paper:[["Model and size on the invoice match the AHRI certificate","Modelo y tamaño en la factura coinciden con el AHRI"],["Completion form matches the invoice (what was replaced, what was installed)","El formulario final coincide con la factura (lo reemplazado, lo instalado)"],["Co-funding listed on the invoice","Otros fondos anotados en la factura"],["Homeowner's signed page included","Página firmada del dueño incluida"],["Before and after photos included","Fotos antes y después incluidas"],["Going in before the deadline","Se entrega antes del plazo"]]};
+
+function toolHTML(t){
+ var es=lang==="es";
+ if(t==="scope")return '<div class="tool"><h4>'+(es?"Revise su alcance":"Check your scope")+'</h4><div class="fields"><label class="f">'+(es?"Ahorro modelado (%)":"Modeled savings (%)")+'<input type="number" id="sv" min="0" step="0.1" inputmode="decimal"></label><label class="f">'+(es?"Reparaciones ($)":"Repairs ($)")+'<input type="number" id="rp" min="0" inputmode="decimal"></label><label class="f">'+(es?"Trabajo de energía ($)":"Energy work ($)")+'<input type="number" id="en" min="0" inputmode="decimal"></label></div><div class="result" id="tout">'+(es?"Escriba los números de su modelo y estimado.":"Type the numbers from your model and estimate.")+'</div></div>';
+ if(t==="budget")return '<div class="tool"><h4>'+(es?"Revise su cotización por categoría":"Check your bid by category")+'</h4><div class="fields"><label class="f">'+(es?"Accesibilidad ($)":"Accessibility ($)")+'<input type="number" id="bA" min="0" inputmode="decimal"></label><label class="f">'+(es?"Pre-climatización ($)":"Pre-weatherization ($)")+'<input type="number" id="bP" min="0" inputmode="decimal"></label><label class="f">'+(es?"Climatización ($)":"Weatherization ($)")+'<input type="number" id="bW" min="0" inputmode="decimal"></label></div><div class="result" id="tout">'+(es?"Escriba los totales por categoría.":"Type your totals by category.")+'</div></div>';
+ if(GATE[t]){
+  var h='<div class="tool"><h4>'+(t==="gate"?(es?"¿Listo para instalar?":"Ready to install?"):(es?"¿Listo para entregar?":"Ready to submit?"))+'</h4><ul class="checks">';
+  GATE[t].forEach(function(g,j){var id="rh2-"+t+"-"+j;h+='<li><label><input type="checkbox" data-k="'+id+'" data-tool="'+t+'"'+(S(id)==="1"?" checked":"")+'><span>'+esc(L(g))+'</span></label></li>';});
+  return h+'</ul><div class="result" id="tout"></div></div>';
+ }
+ return "";
+}
+function num(id){var e=document.getElementById(id);if(!e)return null;var v=parseFloat(e.value);return isNaN(v)?null:v;}
+function money(v){return "$"+Math.round(v).toLocaleString("en-US");}
+function wireTool(t){
+ var o=document.getElementById("tout"); if(!o)return; var es=lang==="es";
+ if(t==="scope"){var f=function(){var sv=num("sv"),rp=num("rp"),en=num("en"),m=[],bad=false,warn=false;if(sv===null&&rp===null&&en===null)return;
+  if(sv!==null){if(sv>=10)m.push(es?"✓ "+sv+"% de ahorro: cumple el 10%":"✓ "+sv+"% savings: meets the 10%");else{bad=true;m.push(es?"✕ "+sv+"%: necesita 10% o más. Agregue medidas que ahorren más (sellado de aire, aislamiento, bomba de calor).":"✕ "+sv+"%: needs 10% or more. Add bigger-savings measures (air sealing, insulation, heat pump).");}}
+  if(rp!==null&&en!==null&&rp+en>0){var pc=Math.round(rp/(rp+en)*1000)/10;if(pc<=30)m.push(es?"✓ Reparaciones: "+pc+"% del total":"✓ Repairs are "+pc+"% of the total");else if(pc<=40){warn=true;m.push(es?"! Reparaciones "+pc+"%: bajo el 40%, pero vigile que el 70% vaya a energía en total":"! Repairs "+pc+"%: under 40%, but watch the 70%-to-energy rule overall");}else{bad=true;m.push(es?"✕ Reparaciones "+pc+"%: más del 40% permitido":"✕ Repairs "+pc+"%: over the 40% limit");}}
+  o.className="result "+(bad?"bad":warn?"warn":"ok");o.innerHTML=m.map(esc).join("<br>");};
+  ["sv","rp","en"].forEach(function(id){document.getElementById(id).addEventListener("input",f);});}
+ if(t==="budget"){var g=function(){var a=num("bA"),p=num("bP"),w=num("bW"),m=[],bad=false;if(a===null&&p===null&&w===null)return;
+  [[a,2000,"Accessibility","Accesibilidad"],[p,15000,"Pre-weatherization","Pre-climatización"],[w,5000,"Weatherization","Climatización"]].forEach(function(r){if(r[0]===null)return;if(r[0]>r[1]){bad=true;m.push("✕ "+(es?r[3]:r[2])+" "+money(r[0])+(es?" pasa el límite usual de ":" is over the usual limit of ")+money(r[1]));}else m.push("✓ "+(es?r[3]:r[2])+" "+money(r[0]));});
+  var tt=(a||0)+(p||0)+(w||0);m.push("Total: "+money(tt)+(es?" (máximo usual por casa: $22,000 de trabajo + $750 de evaluación)":" (usual max per home: $22,000 of work + $750 assessment)"));if(tt>22000)bad=true;
+  o.className="result "+(bad?"bad":"ok");o.innerHTML=m.map(esc).join("<br>");};
+  ["bA","bP","bW"].forEach(function(id){document.getElementById(id).addEventListener("input",g);});}
+ if(GATE[t])gate(t);
+}
+function gate(t){var o=document.getElementById("tout");if(!o)return;var all=true,es=lang==="es";GATE[t].forEach(function(_,j){if(S("rh2-"+t+"-"+j)!=="1")all=false;});
+ o.className="result "+(all?"ok":"bad");o.textContent=t==="gate"?(all?(es?"✓ Listo para instalar":"✓ Ready to install"):(es?"✕ Todavía no instale":"✕ Not ready to install yet")):(all?(es?"✓ Listo para entregar":"✓ Ready to submit"):(es?"✕ Arregle lo que falta antes de entregar":"✕ Fix what's missing before you submit"));}
+
+function renderCmp(){
+ var h='<thead><tr><th></th>'+KEYS.map(function(k){return "<th>"+esc(L(P[k].name))+"</th>";}).join("")+'</tr></thead><tbody>';
+ CMP.forEach(function(r){h+='<tr><td>'+esc(L(r[0]))+'</td>'+[1,2,3].map(function(c){return '<td data-h="'+esc(L(P[KEYS[c-1]].name))+'">'+esc(L(r[c]))+'</td>';}).join("")+'</tr>';});
+ document.getElementById("cmpTbl").innerHTML=h+'</tbody>';
+ document.getElementById("anyLinks").innerHTML=linkList(ANY);
+}
 function applyLang(){
  document.documentElement.lang=lang;
- Array.prototype.forEach.call(document.querySelectorAll("[data-t]"),function(el){var p=T[el.getAttribute("data-t")];if(p)el.innerHTML=L(p);});
+ Array.prototype.forEach.call(document.querySelectorAll("[data-t]"),function(el){var p=T[el.getAttribute("data-t")];if(p)el.textContent=L(p);});
  Array.prototype.forEach.call(document.querySelectorAll(".lang button"),function(b){b.setAttribute("aria-pressed",b.getAttribute("data-lang")===lang?"true":"false");});
- ["city","util","hh"].forEach(renderSteps); renderGate("city","gateOut"); renderGate("util","gateOutUtil"); renderMeasures(); renderPrinc(); scope(); budget();
+ renderPick();renderView();renderCmp();
 }
+function scrollTo(el){if(el&&el.scrollIntoView)el.scrollIntoView({behavior:"smooth",block:"start"});}
 
-document.addEventListener("change",function(e){
- var k=e.target.getAttribute&&e.target.getAttribute("data-k"); if(!k)return;
- store(k,e.target.checked?"1":"0");
- if(k.indexOf("rh-g-city")===0)updateGate("city","gateOut");
- else if(k.indexOf("rh-g-util")===0)updateGate("util","gateOutUtil");
- else updateProg(k.split("-")[1]);
+document.addEventListener("click",function(e){
+ var b=e.target.closest("button,a");if(!b)return;
+ if(b.hasAttribute("data-prog")){cur=b.getAttribute("data-prog");S("rh2-prog",cur);try{history.replaceState(null,"","#"+cur);}catch(x){}renderPick();renderView();scrollTo(view);}
+ else if(b.hasAttribute("data-role")){role=b.getAttribute("data-role");S("rh2-role",role);renderView();}
+ else if(b.hasAttribute("data-go")){var g=+b.getAttribute("data-go");if(cur&&g>=0&&g<P[cur].steps.length){S("rh2-step-"+cur,String(g));renderView();if(b.closest(".nav"))scrollTo(document.getElementById("stage"));}}
+ else if(b.hasAttribute("data-lang")){lang=b.getAttribute("data-lang");S("rh2-lang",lang);applyLang();}
+ else if(b.id==="cmpLink"){e.preventDefault();var c=document.getElementById("cmp");c.open=true;scrollTo(c);}
+ else if(b.id==="printBtn"){window.print();}
+ else if(b.id==="reset"){if(!window.confirm(lang==="es"?"¿Borrar todas sus marcas en este dispositivo?":"Clear all your checkmarks on this device?"))return;try{Object.keys(localStorage).forEach(function(k){if(k.indexOf("rh2-")===0&&["rh2-lang","rh2-prog","rh2-role"].indexOf(k)<0)localStorage.removeItem(k);});}catch(x){}renderView();}
 });
-document.getElementById("measure").addEventListener("change",showMeasure);
-["sv","rp","en"].forEach(function(id){document.getElementById(id).addEventListener("input",scope);});
-["bA","bP","bW"].forEach(function(id){document.getElementById(id).addEventListener("input",budget);});
-Array.prototype.forEach.call(document.querySelectorAll(".lang button"),function(b){b.addEventListener("click",function(){lang=b.getAttribute("data-lang");store("rh-lang",lang);applyLang();});});
-Array.prototype.forEach.call(document.querySelectorAll("[role=tab]"),function(b){b.addEventListener("click",function(){
- var t=b.getAttribute("data-tab");
- Array.prototype.forEach.call(document.querySelectorAll("[role=tab]"),function(x){x.setAttribute("aria-selected",x===b?"true":"false");});
- Array.prototype.forEach.call(document.querySelectorAll("[data-panel]"),function(p){p.hidden=p.getAttribute("data-panel")!==t;});
- store("rh-tab",t); if(history.replaceState)history.replaceState(null,"","#"+t);
-});});
-document.getElementById("reset").addEventListener("click",function(){
- if(!window.confirm(lang==="es"?"¿Borrar todas sus marcas en este dispositivo?":"Clear all your checkmarks on this device?"))return;
- try{Object.keys(localStorage).forEach(function(k){if(k.indexOf("rh-")===0&&k!=="rh-lang"&&k!=="rh-tab")localStorage.removeItem(k);});}catch(e){}
- applyLang();
-});
+document.addEventListener("change",function(e){var k=e.target.getAttribute&&e.target.getAttribute("data-k");if(!k)return;S(k,e.target.checked?"1":"0");
+ var t=e.target.getAttribute("data-tool");if(t){gate(t);return;}
+ var rail=document.querySelectorAll(".rail button");if(rail.length&&cur){var i=stepIdx(cur),btn=rail[i],d=stepDone(cur,i);btn.classList.toggle("done",d);btn.querySelector(".n").textContent=d?"✓":String(i+1);}});
 
-var saved=store("rh-lang"); if(saved==="es"||saved==="en")lang=saved;
-else if((navigator.language||"").toLowerCase().indexOf("es")===0)lang="es";
-var start=(location.hash||"").replace("#","")||store("rh-tab");
+var sl=S("rh2-lang");if(sl==="es"||sl==="en")lang=sl;else if((navigator.language||"").toLowerCase().indexOf("es")===0)lang="es";
+var hsh=(location.hash||"").replace("#","");if(P[hsh])cur=hsh;
+if(["a","c","b"].indexOf(role)<0)role="b";
 applyLang();
-if(start&&document.querySelector('[data-tab="'+start+'"]'))document.querySelector('[data-tab="'+start+'"]').click();
 })();
 </script>
 </body>
