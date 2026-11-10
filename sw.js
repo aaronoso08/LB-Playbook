@@ -1,6 +1,6 @@
 // Latino Built Playbook: offline support.
 // The page itself stays encrypted; this only keeps a copy on the phone so it opens without signal.
-const CACHE = "lb-playbook-v1";
+const CACHE = "lb-playbook-v2";
 const CORE = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
@@ -18,7 +18,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
 
   // The playbook page: try the network first (so updates show up), fall back to the saved copy.
-  if (req.mode === "navigate" && url.origin === location.origin && !url.pathname.includes("/bids/")) {
+  if (req.mode === "navigate" && url.origin === location.origin && !url.pathname.includes("/bids/") && !url.pathname.includes("/retrofit")) {
     e.respondWith((async () => {
       const cache = await caches.open(CACHE);
       const net = fetch(req, { cache: "no-store" }).then(r => { if (r.ok) cache.put("./index.html", r.clone()); return r; });
@@ -33,7 +33,7 @@ self.addEventListener("fetch", e => {
   }
 
   // Icons and fonts: use the saved copy, refresh it in the background.
-  const sameStatic = url.origin === location.origin && /\.(png|json)$/.test(url.pathname) && !url.pathname.includes("/bids/");
+  const sameStatic = url.origin === location.origin && /\.(png|json)$/.test(url.pathname) && !url.pathname.includes("/bids/") && !url.pathname.includes("/retrofit");
   const fonts = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com";
   if (sameStatic || fonts) {
     e.respondWith((async () => {
